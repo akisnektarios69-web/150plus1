@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-07T21:18:20.935399+00:00",
+  "generated_at": "2026-06-07T21:07:13.177618+00:00",
   "reference_date": "2026-06-06",
   "half_life_days": 21,
   "polls": [
@@ -115,15 +115,15 @@
   },
   "econ": {
     "growth": 2.1,
-    "inflation": 2.9,
+    "inflation": 5.0,
     "unemp": 9.5,
     "conf": -52.2
   },
-  "health_index": -0.196,
+  "health_index": -0.275,
   "sentiment": {
-    "ND": -0.091,
-    "ELAS": 0.2,
-    "PASOK": 0.167,
+    "ND": 0.0,
+    "ELAS": 0.0,
+    "PASOK": 0.0,
     "ELPIDA": 0.0,
     "EL": 0.0,
     "KKE": 0.0,
@@ -294,15 +294,15 @@
     "SAM": 0.0
   },
   "effective_pct": {
-    "ND": 24.28,
-    "ELAS": 13.52,
-    "PASOK": 9.87,
-    "ELPIDA": 10.15,
-    "EL": 6.27,
-    "KKE": 5.77,
-    "PE": 5.85,
-    "FL": 3.47,
-    "SAM": 0.07
+    "ND": 24.1,
+    "ELAS": 13.43,
+    "PASOK": 9.8,
+    "ELPIDA": 10.18,
+    "EL": 6.3,
+    "KKE": 5.8,
+    "PE": 5.88,
+    "FL": 3.5,
+    "SAM": 0.1
   },
   "results": {
     "parties": [
@@ -311,21 +311,21 @@
         "short": "ΝΔ",
         "name": "Νέα Δημοκρατία",
         "color": "#1f4f9c",
-        "pct": 24.3,
-        "mean_seats": 99.5,
-        "rep_seats": 100,
-        "low90": 62,
-        "high90": 137
+        "pct": 24.1,
+        "mean_seats": 98.5,
+        "rep_seats": 99,
+        "low90": 63,
+        "high90": 139
       },
       {
         "key": "ELAS",
         "short": "ΕΛ.Α.Σ.",
         "name": "ΕΛ.Α.Σ.",
         "color": "#e6a532",
-        "pct": 13.5,
+        "pct": 13.4,
         "mean_seats": 50.3,
         "rep_seats": 50,
-        "low90": 37,
+        "low90": 36,
         "high90": 65
       },
       {
@@ -333,10 +333,10 @@
         "short": "ΠΑΣΟΚ",
         "name": "ΠΑΣΟΚ – ΚΙΝΑΛ",
         "color": "#179b54",
-        "pct": 9.9,
-        "mean_seats": 36.8,
+        "pct": 9.8,
+        "mean_seats": 36.6,
         "rep_seats": 37,
-        "low90": 22,
+        "low90": 21,
         "high90": 52
       },
       {
@@ -345,9 +345,9 @@
         "name": "Ελπίδα",
         "color": "#c8a96b",
         "pct": 10.2,
-        "mean_seats": 37.5,
-        "rep_seats": 37,
-        "low90": 22,
+        "mean_seats": 37.9,
+        "rep_seats": 38,
+        "low90": 23,
         "high90": 54
       },
       {
@@ -358,8 +358,8 @@
         "pct": 6.3,
         "mean_seats": 23.2,
         "rep_seats": 23,
-        "low90": 14,
-        "high90": 34
+        "low90": 13,
+        "high90": 33
       },
       {
         "key": "KKE",
@@ -367,9 +367,9 @@
         "name": "ΚΚΕ",
         "color": "#c8202a",
         "pct": 5.8,
-        "mean_seats": 21.2,
+        "mean_seats": 21.4,
         "rep_seats": 21,
-        "low90": 12,
+        "low90": 13,
         "high90": 31
       },
       {
@@ -377,8 +377,8 @@
         "short": "ΠΕ",
         "name": "Πλεύση Ελευθερίας",
         "color": "#7d4a98",
-        "pct": 5.8,
-        "mean_seats": 21.6,
+        "pct": 5.9,
+        "mean_seats": 21.7,
         "rep_seats": 22,
         "low90": 13,
         "high90": 32
@@ -389,7 +389,7 @@
         "name": "Φωνή Λογικής",
         "color": "#2b333f",
         "pct": 3.5,
-        "mean_seats": 9.9,
+        "mean_seats": 10.3,
         "rep_seats": 10,
         "low90": 0,
         "high90": 21
@@ -400,31 +400,17 @@
         "name": "Κόμμα Σαμαρά (αναμενόμενο)",
         "color": "#0d5b8c",
         "pct": 0.1,
-        "mean_seats": 0.1,
+        "mean_seats": 0.0,
         "rep_seats": 0,
         "low90": 0,
         "high90": 0
       }
     ],
-    "self_sufficiency": 0.0095,
+    "self_sufficiency": 0.0115,
     "first_seats_low90": 65,
-    "first_seats_high90": 137,
+    "first_seats_high90": 139,
     "parties_in_parliament": 8,
     "coalitions": [
-      {
-        "members": [
-          "ND",
-          "ELAS",
-          "PASOK"
-        ],
-        "labels": [
-          "ΝΔ",
-          "ΕΛ.Α.Σ.",
-          "ΠΑΣΟΚ"
-        ],
-        "mean_seats": 186.6,
-        "p_majority": 0.9865
-      },
       {
         "members": [
           "ND",
@@ -436,8 +422,22 @@
           "ΕΛ.Α.Σ.",
           "ΕΛΠΙΔΑ"
         ],
-        "mean_seats": 187.3,
-        "p_majority": 0.986
+        "mean_seats": 186.7,
+        "p_majority": 0.9855
+      },
+      {
+        "members": [
+          "ND",
+          "ELAS",
+          "PASOK"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΕΛ.Α.Σ.",
+          "ΠΑΣΟΚ"
+        ],
+        "mean_seats": 185.4,
+        "p_majority": 0.983
       },
       {
         "members": [
@@ -450,8 +450,8 @@
           "ΠΑΣΟΚ",
           "ΕΛΠΙΔΑ"
         ],
-        "mean_seats": 173.7,
-        "p_majority": 0.903
+        "mean_seats": 173.0,
+        "p_majority": 0.8855
       },
       {
         "members": [
@@ -464,8 +464,8 @@
           "ΕΛ.Α.Σ.",
           "ΕΛ"
         ],
-        "mean_seats": 173.1,
-        "p_majority": 0.886
+        "mean_seats": 172.0,
+        "p_majority": 0.871
       },
       {
         "members": [
@@ -478,8 +478,8 @@
           "ΕΛ.Α.Σ.",
           "ΠΕ"
         ],
-        "mean_seats": 171.4,
-        "p_majority": 0.862
+        "mean_seats": 170.5,
+        "p_majority": 0.8545
       },
       {
         "members": [
@@ -492,8 +492,8 @@
           "ΕΛ.Α.Σ.",
           "ΚΚΕ"
         ],
-        "mean_seats": 171.0,
-        "p_majority": 0.8605
+        "mean_seats": 170.2,
+        "p_majority": 0.851
       }
     ],
     "n_sims": 2000
