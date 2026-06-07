@@ -1,0 +1,30 @@
+name: rebuild-150plus1
+
+# Serverless automation: rebuild the model every 6 hours and commit latest.json.
+# (GitHub cron is UTC; "0 */6 * * *" = every 6 hours.)
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Rebuild model
+        run: python -m pipeline.build_model
+      - name: Commit output
+        run: |
+          git config user.name  "model-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add api/latest.json api/archive/*.json
+          git commit -m "auto: refresh model $(date -u +%FT%TZ)" || echo "no changes"
+          git push

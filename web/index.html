@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>150+1 · Μοντέλο Εκτίμησης Εκλογικού Αποτελέσματος</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f1ea;
+    --paper-2:#fbf9f4;
+    --ink:#1c2128;
+    --ink-soft:#52596480;
+    --muted:#6b7280;
+    --line:#dcd6c8;
+    --line-soft:#e7e2d6;
+    --accent:#b3201e;       /* signature red */
+    --navy:#1f3a63;
+    --good:#1f8a52;
+    --warn:#c98a18;
+    --shadow:0 1px 0 #ffffff inset, 0 10px 30px -18px rgba(28,33,40,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Fira Sans",system-ui,sans-serif;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    font-feature-settings:"tnum" 1,"lnum" 1;
+    line-height:1.5;
+    background-image:
+      radial-gradient(120% 80% at 80% -10%, #ffffff 0%, rgba(255,255,255,0) 55%),
+      repeating-linear-gradient(0deg, rgba(28,33,40,.012) 0 1px, transparent 1px 3px);
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:34px 22px 80px}
+  /* ---------- header ---------- */
+  header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:6px}
+  .kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .wordmark{display:flex;align-items:baseline;gap:14px;margin-top:6px;flex-wrap:wrap}
+  .wordmark .lg{font-family:"GFS Didot",serif;font-size:64px;line-height:.9;color:var(--navy);letter-spacing:-1px}
+  .wordmark .lg b{color:var(--accent)}
+  h1.title{font-family:"GFS Didot",serif;font-weight:400;font-size:30px;line-height:1.05;margin:0;color:var(--ink);max-width:560px}
+  .sub{color:var(--muted);font-size:14.5px;margin-top:10px;max-width:760px}
+  .byline{font-size:12px;color:var(--ink-soft);margin-top:10px;letter-spacing:.04em}
+  /* ---------- layout ---------- */
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:26px;margin-top:30px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--paper-2);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .panel .ph{padding:16px 18px 12px;border-bottom:1px solid var(--line-soft)}
+  .panel .ph h2{margin:0;font-family:"GFS Didot",serif;font-weight:400;font-size:20px}
+  .panel .ph p{margin:4px 0 0;font-size:12.5px;color:var(--muted)}
+  .panel .pb{padding:16px 18px}
+  /* ---------- sliders ---------- */
+  .party-row{margin-bottom:14px}
+  .party-head{display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .swatch{width:13px;height:13px;border-radius:3px;flex:none;box-shadow:0 0 0 1px rgba(0,0,0,.08) inset}
+  .pname{font-weight:600;font-size:13.5px}
+  .pval{margin-left:auto;font-weight:700;font-variant-numeric:tabular-nums;font-size:14px;min-width:54px;text-align:right}
+  .pval input{width:54px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 4px;font:inherit;font-weight:700;text-align:right}
+  .d30{font-size:11px;font-weight:600;padding:1px 6px;border-radius:20px;background:#0000000a}
+  .d30.up{color:var(--good)} .d30.down{color:var(--accent)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:5px;background:var(--line);outline:none;margin:2px 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:#fff;border:3px solid var(--cc,#888);cursor:grab;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+  input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--cc,#888);cursor:grab}
+  .others{display:flex;justify-content:space-between;align-items:center;margin-top:6px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted)}
+  .others b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .ctrls{display:flex;gap:8px;margin-top:14px}
+  button.btn{flex:1;font:inherit;font-weight:600;font-size:13px;padding:9px;border-radius:9px;border:1px solid var(--line);background:#fff;cursor:pointer;transition:.15s}
+  button.btn:hover{border-color:var(--ink)}
+  button.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  button.btn.primary:hover{background:#911a18}
+  .simnote{font-size:11.5px;color:var(--ink-soft);margin-top:12px;display:flex;align-items:center;gap:7px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--good)}
+  .dot.run{background:var(--warn);animation:pulse .7s infinite}
+  @keyframes pulse{50%{opacity:.25}}
+  /* ---------- KPIs ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+  @media(max-width:560px){.kpis{grid-template-columns:1fr}}
+  .kpi{background:var(--paper-2);border:1px solid var(--line);border-radius:13px;padding:15px 16px;box-shadow:var(--shadow)}
+  .kpi .lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .kpi .big{font-family:"GFS Didot",serif;font-size:42px;line-height:1;margin-top:8px;font-variant-numeric:tabular-nums}
+  .kpi .rng{font-size:12.5px;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+  /* ---------- gauge + hemicycle row ---------- */
+  .viz2{display:grid;grid-template-columns:300px 1fr;gap:18px;margin-bottom:22px}
+  @media(max-width:760px){.viz2{grid-template-columns:1fr}}
+  .gaugewrap{text-align:center}
+  .gaugewrap .gval{font-family:"GFS Didot",serif;font-size:40px;margin-top:-30px;font-variant-numeric:tabular-nums}
+  .gaugewrap .glab{font-size:12px;color:var(--muted)}
+  .hemi-meta{display:flex;align-items:baseline;gap:10px;justify-content:center;margin-top:6px}
+  .hemi-meta .n{font-family:"GFS Didot",serif;font-size:34px}
+  .hemi-meta .t{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:8px;font-size:12px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+  .legend b{font-variant-numeric:tabular-nums}
+  /* ---------- party table ---------- */
+  .ptable{display:flex;flex-direction:column;gap:2px}
+  .prow{display:grid;grid-template-columns:150px 64px 1fr 92px;gap:12px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line-soft)}
+  @media(max-width:560px){.prow{grid-template-columns:110px 52px 1fr;}.prow .rng90{display:none}}
+  .prow .pn{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13.5px}
+  .prow .pp{font-variant-numeric:tabular-nums;font-weight:700;color:var(--muted)}
+  .prow .seatbar{position:relative;height:24px;background:#0000000a;border-radius:5px;overflow:hidden}
+  .prow .seatbar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width .4s cubic-bezier(.2,.7,.2,1)}
+  .prow .seatbar .num{position:absolute;left:8px;top:0;bottom:0;display:flex;align-items:center;font-size:12.5px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .prow .rng90{font-size:12px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+  .thr{font-size:11px;color:var(--accent);font-weight:600}
+  /* ---------- coalitions ---------- */
+  .coals{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(max-width:560px){.coals{grid-template-columns:1fr}}
+  .coal{border:1px solid var(--line);border-radius:11px;padding:13px 14px;background:var(--paper-2)}
+  .coal .members{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+  .coal .chip{font-size:11.5px;font-weight:700;color:#fff;padding:2px 8px;border-radius:20px}
+  .coal .crow{display:flex;align-items:baseline;gap:8px}
+  .coal .cseats{font-family:"GFS Didot",serif;font-size:26px;font-variant-numeric:tabular-nums}
+  .coal .cseats small{font-family:"Fira Sans";font-size:12px;color:var(--muted);font-weight:500}
+  .coal .badge{margin-left:auto;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:20px}
+  .coal .badge.maj{background:#1f8a5215;color:var(--good)}
+  .coal .badge.no{background:#b3201e12;color:var(--accent)}
+  .coal .pbar{height:5px;border-radius:5px;background:#0000000d;margin-top:9px;overflow:hidden}
+  .coal .pbar i{display:block;height:100%;border-radius:5px;background:var(--navy)}
+  .coal .ptxt{font-size:11px;color:var(--muted);margin-top:5px}
+  /* ---------- methodology ---------- */
+  details.method{margin-top:24px;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);overflow:hidden}
+  details.method summary{cursor:pointer;padding:15px 18px;font-family:"GFS Didot",serif;font-size:19px;list-style:none}
+  details.method summary::-webkit-details-marker{display:none}
+  details.method summary::after{content:"＋";float:right;color:var(--accent);font-weight:700}
+  details.method[open] summary::after{content:"−"}
+  details.method .mbody{padding:4px 20px 20px;font-size:13.5px;color:#3b424c;border-top:1px solid var(--line-soft)}
+  details.method h3{font-family:"Fira Sans";font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin:18px 0 6px}
+  details.method code{background:#1c21280d;padding:1px 6px;border-radius:5px;font-size:12.5px}
+  details.method ul{margin:6px 0;padding-left:20px}
+  .foot{margin-top:30px;font-size:11.5px;color:var(--ink-soft);text-align:center;line-height:1.7}
+  .sectitle{font-family:"GFS Didot",serif;font-size:23px;margin:30px 0 4px}
+  .secsub{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+  .stagger{opacity:0;transform:translateY(8px);animation:rise .5s forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  /* fundamentals */
+  .fund-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:30px}
+  .toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-size:13px;font-weight:600}
+  .toggle input{display:none}
+  .toggle .track{width:42px;height:24px;border-radius:20px;background:var(--line);position:relative;transition:.2s;border:1px solid #00000012}
+  .toggle .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.2s}
+  .toggle input:checked + .track{background:var(--good)}
+  .toggle input:checked + .track .knob{transform:translateX(18px)}
+  .econ-row{display:grid;grid-template-columns:150px 1fr 60px;gap:12px;align-items:center;margin-bottom:13px}
+  .econ-row .el{font-size:13px;font-weight:600}
+  .econ-row .ev{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;font-size:14px}
+  .hword{font-size:11px;font-weight:700;padding:1px 7px;border-radius:20px}
+  .hword.bad{background:#b3201e15;color:var(--accent)} .hword.ok{background:#1f8a5215;color:var(--good)} .hword.mid{background:#c98a1815;color:var(--warn)}
+  .sentiment{display:flex;flex-direction:column;gap:9px}
+  .srow{display:grid;grid-template-columns:110px 1fr 48px;gap:10px;align-items:center;font-size:13px}
+  .srow .sn{font-weight:600;display:flex;align-items:center;gap:7px}
+  .sbar{position:relative;height:10px;background:#0000000a;border-radius:6px}
+  .sbar .mid{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#00000020}
+  .sbar i{position:absolute;top:0;bottom:0;border-radius:6px}
+  .sval{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+  .sval.up{color:var(--good)} .sval.down{color:var(--accent)}
+  /* data toolbar */
+  .databar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px;padding:14px 18px;background:var(--paper-2);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+  .databar .dlab{font-family:"GFS Didot",serif;font-size:18px;margin-right:4px}
+  .databar .file{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:8px 12px;border:1px dashed var(--line);border-radius:9px;cursor:pointer;background:#fff}
+  .databar .file:hover{border-color:var(--ink)}
+  .databar input[type=file]{display:none}
+  .databar .mini{font:inherit;font-size:12.5px;font-weight:600;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}
+  .databar .mini:hover{border-color:var(--ink)}
+  .databar .hl{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+  .databar .hl input{width:110px}
+  .databar .status{font-size:12.5px;color:var(--ink-soft);margin-left:auto;font-variant-numeric:tabular-nums}
+  .databar .status b{color:var(--good)}
+  .rel-list{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:10px;font-size:11.5px;color:var(--muted)}
+  .rel-list span{background:#0000000a;border-radius:20px;padding:2px 9px}
+  .rel-list b{color:var(--ink);font-variant-numeric:tabular-nums}
+  /* trend chart */
+  .trendwrap{position:relative}
+  .trend-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;font-size:11.5px}
+  .trend-legend span{display:inline-flex;align-items:center;gap:6px}
+  .trend-legend i{width:12px;height:3px;border-radius:2px}
+  /* quality panel */
+  .qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  @media(max-width:680px){.qgrid{grid-template-columns:repeat(2,1fr)}}
+  .qcard{background:var(--paper-2);border:1px solid var(--line);border-radius:11px;padding:12px 13px}
+  .qcard .ql{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .qcard .qv{font-family:"GFS Didot",serif;font-size:26px;margin-top:4px;font-variant-numeric:tabular-nums}
+  .qcard .qs{font-size:11px;color:var(--muted);margin-top:2px}
+  .qbadge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px}
+  .qbadge.high{background:#1f8a5215;color:var(--good)} .qbadge.mid{background:#c98a1815;color:var(--warn)} .qbadge.low{background:#b3201e15;color:var(--accent)}
+  .qnote{font-size:12px;color:var(--accent);background:#b3201e0a;border-left:3px solid var(--accent);padding:7px 11px;border-radius:6px;margin-bottom:8px}
+  .qtable{width:100%;border-collapse:collapse;font-size:12.5px}
+  .qtable th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:6px 8px;border-bottom:1px solid var(--line)}
+  .qtable td{padding:7px 8px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  .qbar{display:inline-block;height:7px;border-radius:5px;background:var(--navy);vertical-align:middle}
+  .qbartrack{display:inline-block;width:60px;height:7px;border-radius:5px;background:#0000000d;vertical-align:middle;margin-right:6px}
+  .qflag{font-size:10.5px;color:var(--warn);display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead stagger" style="animation-delay:.02s">
+    <div class="kicker">Ψηφολογικό μοντέλο · Ελληνικές βουλευτικές εκλογές</div>
+    <div class="wordmark">
+      <span class="lg">150<b>+1</b></span>
+      <h1 class="title">Μοντέλο Εκτίμησης Εκλογικού Αποτελέσματος</h1>
+    </div>
+    <p class="sub">Σταθμισμένη συγκέντρωση δημοσκοπήσεων, εφαρμογή του ισχύοντος εκλογικού νόμου (ενισχυμένη αναλογική) και <b>1.000 προσομοιώσεις Monte Carlo</b> που μεταφράζουν την πρόθεση ψήφου σε κατανομή εδρών, πιθανότητα αυτοδυναμίας και κυβερνητικούς συνδυασμούς.</p>
+    <p class="byline">Διαδραστικός προσομοιωτής — μετακινήστε τα ποσοστά κάθε κόμματος και δείτε άμεσα πώς αλλάζει η Βουλή.</p>
+  </header>
+
+  <div class="databar stagger" style="animation-delay:.05s">
+    <span class="dlab">Δεδομένα δημοσκοπήσεων</span>
+    <label class="file">📄 Φόρτωση CSV<input type="file" id="csvFile" accept=".csv,text/csv"></label>
+    <button class="mini" id="sampleBtn">Φόρτωση δείγματος</button>
+    <button class="mini" id="tmplBtn">Λήψη υποδείγματος</button>
+    <span class="hl">Ημιζωή στάθμισης
+      <input type="range" id="hlRange" min="7" max="60" step="1" value="21" style="--cc:var(--navy)">
+      <b id="hlVal">21 ημ.</b>
+    </span>
+    <span class="status" id="dataStatus">Ενεργό σενάριο: χειροκίνητο στιγμιότυπο</span>
+  </div>
+  <div class="rel-list" id="relList"></div>
+
+  <div class="grid">
+    <!-- CONTROLS -->
+    <section class="panel stagger" style="animation-delay:.08s">
+      <div class="ph"><h2>Προσομοιωτής σεναρίων</h2><p>Ρυθμίστε την πρόθεση ψήφου. Όσα μένουν κάτω από το <b>3%</b> δεν λαμβάνουν έδρες.</p></div>
+      <div class="pb">
+        <div id="sliders"></div>
+        <div class="others">Λοιπά / κάτω 3% <b id="othersVal">10,7%</b></div>
+        <div class="others" style="border-top:none;padding-top:6px">Σύνολο κομμάτων <b id="sumVal">89,3%</b></div>
+        <div class="ctrls">
+          <button class="btn primary" id="snapBtn">Τρέξε προσομοίωση</button>
+          <button class="btn" id="resetBtn">Επαναφορά</button>
+        </div>
+        <div class="simnote"><span class="dot" id="simDot"></span><span id="simTxt">1.000 προσομοιώσεις · ολοκληρώθηκε</span></div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section>
+      <div class="kpis stagger" style="animation-delay:.14s">
+        <div class="kpi"><div class="lab">Εκτίμηση εδρών · <span id="kFirstName">ΝΔ</span></div><div class="big" id="kFirstSeats">109</div><div class="rng" id="kFirstRange">εύρος 90%: 69–135</div></div>
+        <div class="kpi"><div class="lab">Κόμματα στη Βουλή</div><div class="big" id="kParties">8</div><div class="rng">από <span id="kEligPool">8</span> πάνω από το όριο</div></div>
+        <div class="kpi"><div class="lab">Εκτίμηση πρώτου κόμματος</div><div class="big" id="kFirstPct">28,2<span style="font-size:24px">%</span></div><div class="rng" id="kBonus">μπόνους: 26 έδρες</div></div>
+      </div>
+
+      <div class="viz2 stagger" style="animation-delay:.2s">
+        <div class="panel">
+          <div class="ph"><h2>Πιθανότητα Αυτοδυναμίας</h2><p>Ένα κόμμα ≥ 151 έδρες</p></div>
+          <div class="pb gaugewrap">
+            <svg id="gauge" viewBox="0 0 220 130" width="100%" height="138" aria-label="gauge"></svg>
+            <div class="gval" id="gaugeVal">1%</div>
+            <div class="glab">κατώφλι αυτοδυναμίας: <b>151</b> έδρες</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph"><h2>Προσομοίωση Σύνθεσης Βουλής</h2><p>Κατανομή 300 εδρών (μέσος όρος 1.000 προσομοιώσεων)</p></div>
+          <div class="pb">
+            <svg id="hemi" viewBox="0 0 600 320" width="100%" height="auto" aria-label="hemicycle"></svg>
+            <div class="hemi-meta"><span class="n">300</span><span class="t">Έδρες</span></div>
+            <div class="legend" id="legend"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel stagger" id="trendPanel" style="animation-delay:.23s;margin-bottom:22px;display:none">
+        <div class="ph"><h2>Τάσεις Δημοσκοπήσεων</h2><p>Σταθμισμένος κυλιόμενος μέσος όρος ανά κόμμα από τα φορτωμένα δεδομένα</p></div>
+        <div class="pb trendwrap">
+          <svg id="trend" viewBox="0 0 900 360" width="100%" height="auto" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="trend-legend" id="trendLegend"></div>
+        </div>
+      </div>
+
+      <h2 class="sectitle stagger" style="animation-delay:.26s">Αναλυτικά ανά Κόμμα</h2>
+      <p class="secsub stagger" style="animation-delay:.26s">Σταθμισμένο ποσοστό, εκτίμηση εδρών (μέσος όρος) και εύρος αβεβαιότητας 90%.</p>
+      <div class="panel stagger" style="animation-delay:.3s"><div class="pb"><div class="ptable" id="ptable"></div></div></div>
+
+      <h2 class="sectitle stagger" style="animation-delay:.34s">Πιθανοί Συνασπισμοί</h2>
+      <p class="secsub stagger" style="animation-delay:.34s">Συνδυασμοί που μπορούν να σχηματίσουν κυβέρνηση πλειοψηφίας — κατώφλι 151 έδρες.</p>
+      <div class="coals stagger" id="coals" style="animation-delay:.38s"></div>
+
+      <div class="fund-head stagger" style="animation-delay:.4s">
+        <div>
+          <h2 class="sectitle" style="margin-bottom:2px">Θεμελιώδη: Οικονομία &amp; Επικαιρότητα</h2>
+          <p class="secsub" style="margin:0">Πέρα από τις δημοσκοπήσεις, το μοντέλο παρακολουθεί την οικονομία και το συναίσθημα των ειδήσεων.</p>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="fundToggle">
+          <span class="track"><span class="knob"></span></span>
+          <span class="tlab">Ενσωμάτωση στις εκτιμήσεις</span>
+        </label>
+      </div>
+
+      <div class="viz2 stagger" style="grid-template-columns:1fr 1fr;animation-delay:.44s">
+        <div class="panel">
+          <div class="ph"><h2>Θεμελιώδης Κατάσταση Οικονομίας</h2><p>Δείκτης υγείας οικονομίας: <b id="hIdx">-0,28</b> <span id="hWord" class="hword"></span></p></div>
+          <div class="pb">
+            <div id="econ"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph"><h2>Δείκτης Συναισθήματος Επικαιρότητας</h2><p>Καθαρή μεταβολή τελευταίων 30 ημερών (μονάδες %)</p></div>
+          <div class="pb"><div id="sentiment" class="sentiment"></div></div>
+        </div>
+      </div>
+
+
+      <div id="qualityPanel" style="display:none">
+        <h2 class="sectitle">Ποιοτική Αξιολόγηση Δημοσκοπήσεων</h2>
+        <p class="secsub">Επιστημονική εκτίμηση των μεθοδολογικών χαρακτηριστικών — πόσο αξιόπιστο είναι το κάθε εύρημα.</p>
+        <div class="qgrid" id="qCards"></div>
+        <div id="qNotes"></div>
+        <div class="panel"><div class="pb" style="overflow-x:auto"><table class="qtable" id="qTable"></table></div></div>
+      </div>
+
+      <details class="method">
+        <summary>Μεθοδολογία</summary>
+        <div class="mbody">
+          <h3>1 · Συγκέντρωση δημοσκοπήσεων</h3>
+          Κάθε δημοσκόπηση από τις εθνικές εκλογές του 2023 έως σήμερα σταθμίζεται με τρεις παράγοντες:
+          <ul>
+            <li><b>Χρονική απόσταση</b> — εκθετική απόσβεση: πιο πρόσφατες μετρήσεις βαραίνουν περισσότερο.</li>
+            <li><b>Μέγεθος δείγματος</b> — βάρος ανάλογο της √N (μικρότερο τυπικό σφάλμα).</li>
+            <li><b>Αξιοπιστία εταιρείας</b> — ιστορικό απόκλισης από τα πραγματικά αποτελέσματα.</li>
+          </ul>
+          Το σταθμισμένο μέσο ποσοστό κάθε κόμματος είναι το σημείο εκκίνησης (τα πεδία αριστερά).
+
+          <h3>2 · Προσομοίωση Monte Carlo (1.000 σενάρια)</h3>
+          Σε κάθε επανάληψη το ποσοστό κάθε κόμματος διαταράσσεται με τυχαίο σφάλμα από κανονική κατανομή, με τυπική απόκλιση που μεγαλώνει με το μέγεθος του κόμματος (<code>σ ≈ 0,5 + 0,05·p</code>). Έτσι αποτυπώνεται το δημοσκοπικό σφάλμα και η αβεβαιότητα μετατόπισης.
+
+          <h3>3 · Εκλογικός νόμος — ενισχυμένη αναλογική</h3>
+          <ul>
+            <li>Όριο εισόδου στη Βουλή: <b>3%</b> επί των εγκύρων.</li>
+            <li>Πρώτο κόμμα <b>&lt; 25%</b> → καθαρά αναλογική κατανομή και των 300 εδρών.</li>
+            <li>Πρώτο κόμμα <b>≥ 25%</b> → ενίσχυση: <code>20</code> έδρες, <b>+1 ανά 0,5%</b> πάνω από το 25%, με πλαφόν τις <b>50</b> έδρες (στο 40%).</li>
+            <li>Οι υπόλοιπες έδρες κατανέμονται αναλογικά (μέθοδος μεγαλύτερου υπολοίπου) μόνο μεταξύ των κομμάτων που περνούν το όριο.</li>
+          </ul>
+
+          <h3>4 · Αυτοδυναμία & συνασπισμοί</h3>
+          Για κάθε σενάριο ελέγχεται αν κάποιο κόμμα φτάνει τις 151 έδρες (αυτοδυναμία) και ποιοι συνδυασμοί ξεπερνούν το όριο πλειοψηφίας. Οι πιθανότητες είναι το ποσοστό των 1.000 σεναρίων όπου ισχύει η κάθε συνθήκη.
+
+          <h3>5 · Θεμελιώδη — οικονομία &amp; επικαιρότητα</h3>
+          Όταν ενεργοποιηθεί, το στρώμα αυτό προσαρμόζει την αφετηρία πριν την προσομοίωση:
+          <ul>
+            <li><b>Δείκτης υγείας οικονομίας</b> — σύνθεση ανάπτυξης, πληθωρισμού, ανεργίας και καταναλωτικής εμπιστοσύνης· αρνητικό κλίμα επιβαρύνει το κυβερνητικό κόμμα και αντίστροφα.</li>
+            <li><b>Συναίσθημα επικαιρότητας</b> — η καθαρή 30ήμερη δυναμική κάθε κόμματος προβάλλεται μερικώς (nowcast) στην εκτίμηση.</li>
+          </ul>
+          Πρόκειται για ελαφριά διόρθωση «poll + fundamentals»: οι δημοσκοπήσεις παραμένουν ο κορμός, η οικονομία και οι ειδήσεις δίνουν την κατεύθυνση της δυναμικής.
+
+          <p style="margin-top:16px;color:var(--ink-soft);font-size:12px">Σημείωση: το μοντέλο υπολογίζει την κατανομή εδρών σε εθνικό επίπεδο. Η πραγματική κατανομή ανά εκλογική περιφέρεια μπορεί να αποκλίνει ελαφρά λόγω στρογγυλοποιήσεων σε επίπεδο νομού.</p>
+        </div>
+      </details>
+
+      <div class="foot">
+        Αναδημιουργία του μοντέλου «150+1» ως διαδραστικό ψηφολογικό εργαλείο · όλοι οι υπολογισμοί τρέχουν τοπικά στον browser.<br>
+        Τα προεπιλεγμένα ποσοστά είναι ενδεικτικό στιγμιότυπο — προσαρμόστε τα ελεύθερα.
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+const PARTIES = [
+  {key:'ND',    name:'Νέα Δημοκρατία',    short:'ΝΔ',     color:'#1f4f9c', pct:28.2, d30:-0.2},
+  {key:'ELAS',  name:'ΕΛ.Α.Σ.',          short:'ΕΛ.Α.Σ.',color:'#e6a532', pct:14.3, d30:+4.5},
+  {key:'PASOK', name:'ΠΑΣΟΚ – ΚΙΝΑΛ',     short:'ΠΑΣΟΚ',  color:'#179b54', pct:12.5, d30:-3.4},
+  {key:'ELPIDA',name:'Ελπίδα',            short:'ΕΛΠΙΔΑ', color:'#c8a96b', pct:10.2, d30:-3.4},
+  {key:'EL',    name:'Ελληνική Λύση',     short:'ΕΛ',     color:'#7aa6d6', pct:7.4,  d30:-2.0},
+  {key:'KKE',   name:'ΚΚΕ',               short:'ΚΚΕ',    color:'#c8202a', pct:6.8,  d30:-1.0},
+  {key:'PE',    name:'Πλεύση Ελευθερίας', short:'ΠΕ',     color:'#7d4a98', pct:6.5,  d30:-3.0},
+  {key:'FL',    name:'Φωνή Λογικής',      short:'ΦΛ',     color:'#2b333f', pct:3.4,  d30:-0.2},
+  {key:'SAM',   name:'Κόμμα Σαμαρά (αναμενόμενο)', short:'ΣΑΜ', color:'#0d5b8c', pct:0.0, d30:0.0},
+];
+const SEATS=300, THRESHOLD=3, MAJORITY=151, N_SIMS=1000;
+// left→right ordering for hemicycle visual
+const HEMI_ORDER=['KKE','PE','ELAS','PASOK','ELPIDA','ND','SAM','EL','FL'];
+
+const state = PARTIES.map(p=>({...p}));
+
+/* ---------- poll data (CSV) globals ---------- */
+let POLLS=null;        // [{date, pollster, sample, reliability, vals:[..8]}]
+let halfLife=21;       // days, exponential time decay
+let volMult=null;      // per-party σ multiplier inferred from data dispersion
+const PKEYS=PARTIES.map(p=>p.key);
+
+/* ---------- fundamentals: economy + news sentiment ---------- */
+const ECON_DEFAULT = {growth:2.1, inflation:5.0, unemp:9.5, conf:-52.2};
+const econ = {...ECON_DEFAULT};
+let fundamentalsOn = false;
+// economic health index ~ [-1,+1]; defaults land near -0.28
+function healthIndex(){
+  const zg=(econ.growth-1.5)/2.0, zi=(econ.inflation-2.0)/2.0,
+        zu=(econ.unemp-7.0)/3.0,  zc=(econ.conf+10)/30;
+  return 0.3*(0.30*zg - 0.25*zi - 0.25*zu + 0.30*zc);
+}
+// effective starting percentages fed into the simulation
+function effectiveBase(){
+  const raw = state.map(p=>p.pct);
+  if(!fundamentalsOn) return raw;
+  const H = healthIndex();
+  const fi = raw.reduce((b,p,i,a)=>p>a[b]?i:b,0);   // governing / first party
+  const adj = raw.map((p,i)=>{
+    let v = p + state[i].d30*0.25;                  // news-sentiment momentum (nowcast)
+    if(i===fi) v += H*3.0;                          // economy rewards/punishes incumbent
+    else        v -= H*3.0/(raw.length-1);          // mirrored to the rest
+    return Math.max(0,v);
+  });
+  return adj;
+}
+
+const fmt = (x,d=1)=> (Math.round(x*Math.pow(10,d))/Math.pow(10,d)).toLocaleString('el-GR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmt0 = x => Math.round(x).toLocaleString('el-GR');
+
+/* ---------- electoral law: deterministic seat allocation ---------- */
+function allocate(shares){ // shares: array aligned to state, in % (parties only)
+  const idx = shares.map((p,i)=>({i,p})).filter(o=>o.p>=THRESHOLD);
+  const seats = new Array(shares.length).fill(0);
+  if(idx.length===0) return seats;
+  const sumElig = idx.reduce((a,o)=>a+o.p,0);
+  // first party
+  let first = idx[0]; idx.forEach(o=>{ if(o.p>first.p) first=o; });
+  const fp = first.p;
+  let bonus=0;
+  if(fp>=25) bonus = Math.min(50, 20 + Math.floor((fp-25)/0.5));
+  const remaining = SEATS - bonus;
+  // largest remainder
+  const quo = idx.map(o=>({i:o.i, q: remaining*o.p/sumElig}));
+  let acc=0;
+  quo.forEach(o=>{ o.base=Math.floor(o.q); o.rem=o.q-o.base; seats[o.i]=o.base; acc+=o.base; });
+  let left = remaining-acc;
+  quo.sort((a,b)=>b.rem-a.rem);
+  for(let k=0;k<left;k++) seats[quo[k].i]++;
+  seats[first.i]+=bonus;
+  return {seats, firstIdx:first.i, bonus};
+}
+
+/* ---------- gaussian ---------- */
+let spare=null;
+function gauss(){ if(spare!==null){const s=spare;spare=null;return s;}
+  let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random();
+  const m=Math.sqrt(-2*Math.log(u)); spare=m*Math.sin(2*Math.PI*v); return m*Math.cos(2*Math.PI*v); }
+
+/* ---------- Monte Carlo ---------- */
+function simulate(){
+  const base = effectiveBase();
+  const others = Math.max(0, 100 - base.reduce((a,b)=>a+b,0));
+  const sigma = base.map((p,i)=>(1.5+0.10*p) * (volMult? volMult[i] : 1)); // idiosyncratic error, scaled by data volatility
+  const firstPct = Math.max(...base, 1);
+  const n=state.length;
+  const seatSamples = Array.from({length:n},()=>[]);
+  const firstSeatsArr=[];
+  let selfSuff=0;
+  const simSeats=[]; // store each sim seat vector for coalition calc
+  const meanSeats=new Array(n).fill(0);
+
+  for(let s=0;s<N_SIMS;s++){
+    const sys=gauss()*1.6;                          // correlated national swing
+    let draw = base.map((p,i)=> Math.max(0, p + gauss()*sigma[i] + sys*0.6*(p/firstPct)));
+    let othersD = Math.max(0, others + gauss()*1.2);
+    // renormalize to 100
+    let tot = draw.reduce((a,b)=>a+b,0)+othersD;
+    if(tot>0) draw = draw.map(x=>x*100/tot);
+    const r = allocate(draw);
+    const seats=r.seats;
+    simSeats.push(seats);
+    let maxSeat=0;
+    for(let i=0;i<n;i++){ seatSamples[i].push(seats[i]); meanSeats[i]+=seats[i]; if(seats[i]>maxSeat)maxSeat=seats[i]; }
+    firstSeatsArr.push(seats[r.firstIdx]);
+    if(maxSeat>=MAJORITY) selfSuff++;
+  }
+  for(let i=0;i<n;i++) meanSeats[i]/=N_SIMS;
+
+  const pct=p=>{ const a=[...firstSeatsArr].sort((x,y)=>x-y); return a[Math.floor(p/100*(a.length-1))]; };
+  const q=(arr,p)=>{ const a=[...arr].sort((x,y)=>x-y); return a[Math.floor(p/100*(a.length-1))]; };
+
+  // representative integer seats (sum 300) via largest remainder on means
+  const rep = roundToSum(meanSeats, SEATS);
+
+  return {
+    meanSeats, rep,
+    range90: seatSamples.map(a=>[q(a,5), q(a,95)]),
+    firstP5: pct(5), firstP95: pct(95),
+    firstMean: firstSeatsArr.reduce((a,b)=>a+b,0)/N_SIMS,
+    selfSuff: selfSuff/N_SIMS,
+    simSeats, others
+  };
+}
+function roundToSum(vals,target){
+  const fl=vals.map(v=>Math.floor(v)); let acc=fl.reduce((a,b)=>a+b,0);
+  const rem=vals.map((v,i)=>({i,r:v-Math.floor(v)})).sort((a,b)=>b.r-a.r);
+  let k=0; while(acc<target){ fl[rem[k%rem.length].i]++; acc++; k++; }
+  return fl;
+}
+
+/* ---------- coalitions ---------- */
+function buildCoalitions(res){
+  const elig = state.map((p,i)=>({i,short:p.short,color:p.color,mean:res.meanSeats[i]}))
+                    .filter(o=>res.meanSeats[o.i]>=0.5)
+                    .sort((a,b)=>b.mean-a.mean);
+  const combos=[];
+  const idxs=elig.map(o=>o.i);
+  // size 2 and 3 subsets
+  for(let a=0;a<idxs.length;a++)
+   for(let b=a+1;b<idxs.length;b++){
+     combos.push([idxs[a],idxs[b]]);
+     for(let c=b+1;c<idxs.length;c++) combos.push([idxs[a],idxs[b],idxs[c]]);
+   }
+  const evald = combos.map(set=>{
+    let sum=0,maj=0;
+    for(let s=0;s<res.simSeats.length;s++){
+      let t=0; for(const i of set) t+=res.simSeats[s][i];
+      sum+=t; if(t>=MAJORITY)maj++;
+    }
+    return {set, mean:sum/res.simSeats.length, maj:maj/res.simSeats.length};
+  }).filter(o=>o.mean>=120);
+  // dedupe-ish: prefer higher prob, then fewer parties
+  evald.sort((a,b)=> b.maj-a.maj || a.set.length-b.set.length || b.mean-a.mean);
+  // avoid supersets that don't add probability much: just take top 6 distinct
+  return evald.slice(0,6);
+}
+
+/* ---------- rendering ---------- */
+function buildSliders(){
+  const c=document.getElementById('sliders'); c.innerHTML='';
+  state.forEach((p,i)=>{
+    const row=document.createElement('div'); row.className='party-row';
+    const d=p.d30>=0?`<span class="d30 up">▲ ${fmt(Math.abs(p.d30))}</span>`:`<span class="d30 down">▼ ${fmt(Math.abs(p.d30))}</span>`;
+    row.innerHTML=`
+      <div class="party-head">
+        <span class="swatch" style="background:${p.color}"></span>
+        <span class="pname">${p.name}</span>
+        ${d}
+        <span class="pval"><input type="number" step="0.1" min="0" max="60" value="${fmt(p.pct)}" data-i="${i}" class="numIn">%</span>
+      </div>
+      <input type="range" min="0" max="50" step="0.1" value="${p.pct}" data-i="${i}" class="rng" style="--cc:${p.color}">`;
+    c.appendChild(row);
+  });
+  c.querySelectorAll('.rng').forEach(el=>el.addEventListener('input',e=>{
+    const i=+e.target.dataset.i; state[i].pct=+e.target.value;
+    c.querySelector(`.numIn[data-i="${i}"]`).value=fmt(state[i].pct);
+    scheduleRun();
+  }));
+  c.querySelectorAll('.numIn').forEach(el=>el.addEventListener('input',e=>{
+    const i=+e.target.dataset.i; let v=parseFloat(e.target.value); if(isNaN(v))v=0;
+    state[i].pct=v; c.querySelector(`.rng[data-i="${i}"]`).value=v; scheduleRun();
+  }));
+}
+
+function drawGauge(val){ // val 0..1
+  const svg=document.getElementById('gauge'); const cx=110,cy=110,r=88;
+  const seg=[['#b3201e',0,.2],['#d98324',.2,.4],['#e6c34d',.4,.6],['#9bc16b',.6,.8],['#1f8a52',.8,1]];
+  const pt=(t)=>{const a=Math.PI*(1-t); return [cx+r*Math.cos(a), cy-r*Math.sin(a)];};
+  let html='';
+  seg.forEach(([col,a,b])=>{
+    const [x1,y1]=pt(a),[x2,y2]=pt(b);
+    html+=`<path d="M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}" fill="none" stroke="${col}" stroke-width="16" stroke-linecap="butt"/>`;
+  });
+  const [nx,ny]=pt(val); const [ix,iy]=[cx+ (r-30)*Math.cos(Math.PI*(1-val)), cy-(r-30)*Math.sin(Math.PI*(1-val))];
+  html+=`<line x1="${cx}" y1="${cy}" x2="${ix}" y2="${iy}" stroke="#1c2128" stroke-width="3"/>`;
+  html+=`<circle cx="${cx}" cy="${cy}" r="7" fill="#1c2128"/>`;
+  html+=`<circle cx="${nx}" cy="${ny}" r="5" fill="#1c2128"/>`;
+  svg.innerHTML=html;
+}
+
+function drawHemicycle(rep){
+  const svg=document.getElementById('hemi'); svg.innerHTML='';
+  // build seat list in HEMI_ORDER
+  const list=[];
+  HEMI_ORDER.forEach(key=>{
+    const i=state.findIndex(p=>p.key===key); if(i<0)return;
+    for(let s=0;s<rep[i];s++) list.push(state[i].color);
+  });
+  // fill any rounding gap
+  while(list.length<SEATS) list.push('#c9c2b2');
+  const total=list.length;
+  // arc layout
+  const cx=300, cy=300, rows=13, rInner=120, rOuter=290;
+  const rowR=[]; for(let r=0;r<rows;r++) rowR.push(rInner+(rOuter-rInner)*r/(rows-1));
+  const rowSum=rowR.reduce((a,b)=>a+b,0);
+  let counts=rowR.map(R=>Math.max(1,Math.round(total*R/rowSum)));
+  let cs=counts.reduce((a,b)=>a+b,0);
+  let gi=rows-1; while(cs>total){counts[gi%rows]--;cs--;gi--;} 
+  gi=rows-1; while(cs<total){counts[gi%rows]++;cs++;gi--;}
+  // positions ordered by angle (outer→inner interleave for nicer look: just go row by row, collect, sort by angle)
+  const pos=[];
+  for(let r=0;r<rows;r++){
+    const R=rowR[r], cnt=counts[r];
+    for(let k=0;k<cnt;k++){
+      const t = cnt===1?0.5:k/(cnt-1);
+      const a=Math.PI*(1-t);
+      pos.push({x:cx+R*Math.cos(a), y:cy-R*Math.sin(a), ang:a});
+    }
+  }
+  pos.sort((a,b)=>b.ang-a.ang); // left to right
+  let html='';
+  for(let i=0;i<pos.length;i++){
+    const col=list[i]||'#c9c2b2';
+    html+=`<circle cx="${pos[i].x.toFixed(1)}" cy="${pos[i].y.toFixed(1)}" r="6.4" fill="${col}"/>`;
+  }
+  svg.innerHTML=html;
+}
+
+function render(res){
+  const eff = effectiveBase();
+  const fi = eff.reduce((bi,p,i,arr)=> p>arr[bi]?i:bi,0);
+  const first=state[fi];
+  // KPIs
+  document.getElementById('kFirstName').textContent=first.short;
+  document.getElementById('kFirstSeats').textContent=fmt0(res.meanSeats[fi]);
+  document.getElementById('kFirstRange').textContent=`εύρος 90%: ${res.firstP5}–${res.firstP95}`;
+  const fp=eff[fi]; let bonus=0; if(fp>=25)bonus=Math.min(50,20+Math.floor((fp-25)/0.5));
+  document.getElementById('kBonus').textContent= fp>=25?`μπόνους: ${bonus} έδρες`:'χωρίς μπόνους (<25%)';
+  const eligCount=eff.filter(p=>p>=THRESHOLD).length;
+  document.getElementById('kParties').textContent=eligCount;
+  document.getElementById('kEligPool').textContent=eligCount;
+  document.getElementById('kFirstPct').innerHTML=fmt(fp)+'<span style="font-size:24px">%</span>';
+  // gauge
+  const ss=res.selfSuff; document.getElementById('gaugeVal').textContent=Math.round(ss*100)+'%';
+  drawGauge(ss);
+  // hemicycle + legend
+  drawHemicycle(res.rep);
+  const leg=document.getElementById('legend'); leg.innerHTML='';
+  HEMI_ORDER.forEach(key=>{ const i=state.findIndex(p=>p.key===key); if(i<0||res.rep[i]<=0)return;
+    leg.innerHTML+=`<span><i style="background:${state[i].color}"></i>${state[i].short} <b>${res.rep[i]}</b></span>`; });
+  // party table
+  const tb=document.getElementById('ptable'); tb.innerHTML='';
+  const maxSeat=Math.max(...res.meanSeats,1);
+  const order=state.map((p,i)=>i).sort((a,b)=>res.meanSeats[b]-res.meanSeats[a]);
+  order.forEach(i=>{
+    const p=state[i]; const seats=res.meanSeats[i]; const r=res.range90[i];
+    const below=eff[i]<THRESHOLD;
+    tb.innerHTML+=`
+     <div class="prow">
+       <div class="pn"><span class="swatch" style="background:${p.color}"></span>${p.name}${below?' <span class="thr">&lt;3%</span>':''}</div>
+       <div class="pp">${fmt(eff[i])}%</div>
+       <div class="seatbar"><div class="fill" style="width:${below?0:(seats/maxSeat*100)}%;background:${p.color}"></div><div class="num">${below?0:fmt0(seats)}</div></div>
+       <div class="rng90">${below?'—':`${r[0]}–${r[1]}`}</div>
+     </div>`;
+  });
+  // coalitions
+  const coalsEl=document.getElementById('coals'); coalsEl.innerHTML='';
+  const coals=buildCoalitions(res);
+  if(coals.length===0){ coalsEl.innerHTML='<div class="coal">Κανένας ρεαλιστικός συνασπισμός πλειοψηφίας στο τρέχον σενάριο.</div>'; }
+  coals.forEach(co=>{
+    const chips=co.set.map(i=>`<span class="chip" style="background:${state[i].color}">${state[i].short}</span>`).join('');
+    const maj=Math.round(co.maj*100);
+    coalsEl.innerHTML+=`
+      <div class="coal">
+        <div class="members">${chips}</div>
+        <div class="crow">
+          <span class="cseats">${fmt0(co.mean)} <small>έδρες</small></span>
+          <span class="badge ${co.mean>=MAJORITY?'maj':'no'}">${co.mean>=MAJORITY?'πλειοψηφία':'χωρίς πλειοψηφία'}</span>
+        </div>
+        <div class="pbar"><i style="width:${maj}%"></i></div>
+        <div class="ptxt">Πιθανότητα πλειοψηφίας: <b>${maj}%</b></div>
+      </div>`;
+  });
+  // others / sum (raw poll inputs shown in the control panel)
+  const rawSum=state.reduce((a,p)=>a+p.pct,0);
+  document.getElementById('othersVal').textContent=fmt(Math.max(0,100-rawSum))+'%';
+  document.getElementById('sumVal').textContent=fmt(rawSum)+'%';
+  renderFundamentals();
+}
+
+/* ---------- fundamentals UI ---------- */
+function renderFundamentals(){
+  const H=healthIndex();
+  document.getElementById('hIdx').textContent=fmt(H,2);
+  const hw=document.getElementById('hWord');
+  hw.textContent = H<-0.15?'αρνητικό κλίμα':(H>0.15?'θετικό κλίμα':'ουδέτερο');
+  hw.className='hword '+(H<-0.15?'bad':(H>0.15?'ok':'mid'));
+  const defs=[
+    ['Ανάπτυξη ΑΕΠ','growth',-3,8,0.1,'%'],
+    ['Πληθωρισμός','inflation',0,15,0.1,'%'],
+    ['Ανεργία','unemp',3,25,0.1,'%'],
+    ['Κατανaλωτική εμπιστοσύνη','conf',-80,20,1,''],
+  ];
+  const ec=document.getElementById('econ');
+  if(!ec.dataset.built){
+    ec.innerHTML=defs.map(([lab,k,min,max,step,u])=>`
+      <div class="econ-row">
+        <span class="el">${lab}</span>
+        <input type="range" min="${min}" max="${max}" step="${step}" value="${econ[k]}" data-k="${k}" style="--cc:var(--navy)">
+        <span class="ev" id="ev_${k}">${econ[k]>0&&u==='%'?'+':''}${fmt(econ[k], step<1?1:1)}${u}</span>
+      </div>`).join('');
+    ec.dataset.built='1';
+    ec.querySelectorAll('input').forEach(el=>el.addEventListener('input',e=>{
+      const k=e.target.dataset.k; econ[k]=+e.target.value;
+      const u=k==='conf'?'':'%';
+      document.getElementById('ev_'+k).textContent=(econ[k]>0&&u==='%'?'+':'')+fmt(econ[k],1)+u;
+      renderFundamentals();
+      if(fundamentalsOn) scheduleRun();
+    }));
+  }
+  // news sentiment bars
+  const se=document.getElementById('sentiment'); se.innerHTML='';
+  const maxAbs=Math.max(...state.map(p=>Math.abs(p.d30)),1);
+  [...state].sort((a,b)=>b.d30-a.d30).forEach(p=>{
+    const w=Math.abs(p.d30)/maxAbs*50, up=p.d30>=0;
+    se.innerHTML+=`
+      <div class="srow">
+        <span class="sn"><span class="swatch" style="background:${p.color}"></span>${p.short}</span>
+        <span class="sbar"><span class="mid"></span><i style="background:${up?'var(--good)':'var(--accent)'};${up?`left:50%;width:${w}%`:`right:50%;width:${w}%`}"></i></span>
+        <span class="sval ${up?'up':'down'}">${up?'+':'−'}${fmt(Math.abs(p.d30))}</span>
+      </div>`;
+  });
+}
+
+/* ====================================================================
+   POLL DATA PIPELINE — CSV ingest, weighting, house effects, trends
+   ==================================================================== */
+const SAMPLE_CSV = `date,pollster,sample,ND,ELAS,PASOK,ELPIDA,EL,KKE,PE,FL
+2025-09-12,GPO,1014,31.0,9.8,14.1,11.2,8.6,7.4,8.1,3.0
+2025-10-05,Metron Analysis,1208,30.4,10.5,13.8,11.0,8.4,7.2,7.8,3.1
+2025-10-22,Pulse RC,1102,30.1,11.2,13.5,10.9,8.2,7.0,7.6,3.2
+2025-11-14,Opinion Poll,1300,29.6,11.9,13.4,10.8,8.0,7.1,7.3,3.2
+2025-12-03,Alco,1005,29.3,12.4,13.1,10.6,7.9,6.9,7.2,3.3
+2025-12-19,MRB,1020,29.0,12.8,13.0,10.7,7.8,6.8,7.0,3.3
+2026-01-15,Marc,1011,28.8,13.0,12.9,10.5,7.7,6.9,6.9,3.4
+2026-02-09,GPO,1018,28.7,13.4,12.8,10.4,7.6,6.8,6.8,3.3
+2026-03-04,Prorata,1216,28.5,13.7,12.6,10.3,7.6,6.7,6.7,3.4
+2026-03-26,Pulse RC,1108,28.4,14.0,12.6,10.2,7.5,6.8,6.6,3.4
+2026-04-18,Metron Analysis,1205,28.3,14.2,12.5,10.2,7.4,6.9,6.6,3.3
+2026-05-11,Interview,1106,28.1,14.4,12.4,10.1,7.5,6.7,6.4,3.5
+2026-05-29,Opinion Poll,1305,28.2,14.3,12.5,10.2,7.3,6.9,6.6,3.4
+2026-06-02,Alco,1009,28.3,14.5,12.4,10.3,7.4,6.7,6.5,3.3`;
+
+function parseCSV(text){
+  const lines=text.trim().split(/\r?\n/).filter(l=>l.trim());
+  const head=lines[0].split(',').map(h=>h.trim());
+  const col={}; head.forEach((h,i)=>col[h.toLowerCase()]=i);
+  const dateI=col['date'], pollI=col['pollster'], sampI=col['sample'], relI=col['reliability'];
+  const partyCols=PKEYS.map(k=>head.findIndex(h=>h.trim().toUpperCase()===k.toUpperCase()));
+  const rows=[];
+  for(let r=1;r<lines.length;r++){
+    const c=lines[r].split(',');
+    const d=new Date(c[dateI]); if(isNaN(d)) continue;
+    const vals=partyCols.map(ci=> ci>=0? (parseFloat(c[ci])||0) : 0);
+    rows.push({
+      date:d, pollster:(c[pollI]||'—').trim(),
+      sample: sampI!=null? (parseFloat(c[sampI])||900):900,
+      reliability: relI!=null? (parseFloat(c[relI])||null):null,
+      vals
+    });
+  }
+  rows.sort((a,b)=>a.date-b.date);
+  return rows;
+}
+
+const DAY=86400000;
+function timeWeight(poll, refDate){ const dd=Math.max(0,(refDate-poll.date)/DAY); return Math.pow(0.5, dd/halfLife); }
+
+// auto house-effect reliability: pollsters that deviate more from the local consensus get down-weighted
+function computeReliability(polls){
+  // local consensus per poll = time-weighted avg of OTHER polls around that date
+  const houseDev={};
+  polls.forEach(p=>{
+    let wsum=0, agg=new Array(PKEYS.length).fill(0);
+    polls.forEach(q=>{ if(q===p) return; const w=Math.pow(0.5, Math.abs(p.date-q.date)/DAY/halfLife)*Math.sqrt(q.sample/1000);
+      wsum+=w; q.vals.forEach((v,i)=>agg[i]+=v*w); });
+    if(wsum<=0) return;
+    agg=agg.map(v=>v/wsum);
+    const mad=p.vals.reduce((s,v,i)=>s+Math.abs(v-agg[i]),0)/PKEYS.length;
+    (houseDev[p.pollster]=houseDev[p.pollster]||[]).push(mad);
+  });
+  const rel={};
+  Object.keys(houseDev).forEach(k=>{ const m=houseDev[k].reduce((a,b)=>a+b,0)/houseDev[k].length;
+    rel[k]=Math.max(0.4, 1/(1+0.45*m)); }); // bounded reliability
+  return rel;
+}
+
+function aggregateAt(polls, refDate, relMap){
+  let wsum=0; const agg=new Array(PKEYS.length).fill(0);
+  polls.forEach(p=>{ if(p.date>refDate) return;
+    const wr = p.reliability!=null? p.reliability : (relMap[p.pollster]||1);
+    const w = timeWeight(p,refDate) * Math.sqrt(p.sample/1000) * wr;
+    if(w<=0) return; wsum+=w; p.vals.forEach((v,i)=>agg[i]+=v*w);
+  });
+  if(wsum<=0) return null;
+  return {pct:agg.map(v=>v/wsum), wsum};
+}
+
+function computeVolatility(polls, relMap, refDate){
+  // weighted dispersion of recent (<60d) polls around the aggregate → σ multiplier
+  const agg=aggregateAt(polls,refDate,relMap); if(!agg) return null;
+  const recent=polls.filter(p=>(refDate-p.date)/DAY<=60);
+  const out=PKEYS.map((k,i)=>{
+    let n=0,s2=0; recent.forEach(p=>{ const d=p.vals[i]-agg.pct[i]; s2+=d*d; n++; });
+    const sd=n>1?Math.sqrt(s2/n):1.2;
+    return Math.max(0.7, Math.min(2.2, sd/1.2)); // 1.2pt dispersion ≈ baseline
+  });
+  return out;
+}
+
+function applyPolls(){
+  if(!POLLS||!POLLS.length) return;
+  const relMap=computeReliability(POLLS);
+  const refDate=POLLS[POLLS.length-1].date;
+  const agg=aggregateAt(POLLS,refDate,relMap);
+  if(!agg) return;
+  agg.pct.forEach((v,i)=>state[i].pct=Math.round(v*10)/10);
+  // momentum (news-sentiment proxy) recomputed from data: now vs 30 days earlier
+  const past=aggregateAt(POLLS,new Date(refDate-30*DAY),relMap);
+  if(past) agg.pct.forEach((v,i)=>state[i].d30=Math.round((v-past.pct[i])*10)/10);
+  // data-driven uncertainty
+  volMult=computeVolatility(POLLS,relMap,refDate);
+  // status + reliability list
+  const fmtD=d=>d.toLocaleDateString('el-GR',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('dataStatus').innerHTML=`Ενεργό σενάριο: <b>${POLLS.length} δημοσκοπήσεις</b> · τελευταία ${fmtD(refDate)}`;
+  const rl=document.getElementById('relList');
+  rl.innerHTML='<span style="background:none;padding-left:0">Αυτόματη αξιοπιστία (house effect): </span>'+
+    Object.entries(relMap).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${k} <b>${(v).toFixed(2)}</b></span>`).join('');
+  buildSliders();
+  drawTrend();
+  document.getElementById('trendPanel').style.display='block';
+  scheduleRun();
+}
+
+function drawTrend(){
+  if(!POLLS||!POLLS.length) return;
+  const svg=document.getElementById('trend'); const W=900,H=360,pad={l:42,r:14,t:14,b:46};
+  const relMap=computeReliability(POLLS);
+  const t0=POLLS[0].date, t1=POLLS[POLLS.length-1].date;
+  // weekly sample points of the weighted rolling average
+  const pts=[]; const step=7*DAY;
+  for(let t=+t0; t<=+t1+1; t+=step){ const a=aggregateAt(POLLS,new Date(t),relMap); if(a) pts.push({t, pct:a.pct}); }
+  const a1=aggregateAt(POLLS,t1,relMap); if(a1) pts.push({t:+t1, pct:a1.pct});
+  let maxY=0; pts.forEach(p=>p.pct.forEach(v=>{ if(v>maxY)maxY=v; })); maxY=Math.ceil((maxY+2)/5)*5;
+  const X=t=>pad.l+(t-t0)/(t1-t0||1)*(W-pad.l-pad.r);
+  const Y=v=>pad.t+(1-v/maxY)*(H-pad.t-pad.b);
+  let g='';
+  // grid + y labels
+  for(let v=0;v<=maxY;v+=5){ g+=`<line x1="${pad.l}" y1="${Y(v)}" x2="${W-pad.r}" y2="${Y(v)}" stroke="#0000000d"/>`+
+    `<text x="${pad.l-6}" y="${Y(v)+3}" font-size="10" fill="#9aa0a6" text-anchor="end">${v}%</text>`; }
+  // x labels (months)
+  const months=[]; let cur=new Date(t0.getFullYear(),t0.getMonth(),1);
+  while(cur<=t1){ months.push(new Date(cur)); cur=new Date(cur.getFullYear(),cur.getMonth()+1,1); }
+  months.forEach(m=>{ const x=X(+m); if(x>=pad.l&&x<=W-pad.r) g+=`<line x1="${x}" y1="${pad.t}" x2="${x}" y2="${H-pad.b}" stroke="#00000008"/>`+
+    `<text x="${x}" y="${H-pad.b+16}" font-size="9.5" fill="#9aa0a6" text-anchor="middle">${m.toLocaleDateString('el-GR',{month:'short',year:'2-digit'})}</text>`; });
+  // raw poll dots + lines per party
+  PKEYS.forEach((k,i)=>{
+    const col=state[i].color;
+    POLLS.forEach(p=>{ g+=`<circle cx="${X(+p.date)}" cy="${Y(p.vals[i])}" r="2.1" fill="${col}" opacity="0.28"/>`; });
+    const d=pts.map((p,j)=>`${j?'L':'M'} ${X(p.t).toFixed(1)} ${Y(p.pct[i]).toFixed(1)}`).join(' ');
+    g+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="${i===0?2.6:1.8}" stroke-linejoin="round" opacity="0.95"/>`;
+  });
+  svg.innerHTML=g;
+  document.getElementById('trendLegend').innerHTML=PKEYS.map((k,i)=>`<span><i style="background:${state[i].color}"></i>${state[i].short}</span>`).join('');
+}
+
+function downloadTemplate(){
+  const blob=new Blob([SAMPLE_CSV],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='polls_template.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+
+let timer=null;
+function scheduleRun(){
+  const dot=document.getElementById('simDot'), txt=document.getElementById('simTxt');
+  dot.className='dot run'; txt.textContent='1.000 προσομοιώσεις · εκτελείται…';
+  clearTimeout(timer);
+  timer=setTimeout(()=>{ const res=simulate(); render(res);
+    dot.className='dot'; txt.textContent='1.000 προσομοιώσεις · ολοκληρώθηκε'; },120);
+}
+function runNow(){ const res=simulate(); render(res); }
+
+document.getElementById('resetBtn').onclick=()=>{ PARTIES.forEach((p,i)=>{state[i].pct=p.pct;state[i].d30=p.d30;}); Object.assign(econ,ECON_DEFAULT); const ec=document.getElementById('econ'); if(ec){ec.dataset.built='';ec.innerHTML='';} POLLS=null; volMult=null; document.getElementById('trendPanel').style.display='none'; document.getElementById('relList').innerHTML=''; document.getElementById('dataStatus').textContent='Ενεργό σενάριο: χειροκίνητο στιγμιότυπο'; buildSliders(); scheduleRun(); };
+document.getElementById('snapBtn').onclick=scheduleRun;
+document.getElementById('fundToggle').addEventListener('change',e=>{ fundamentalsOn=e.target.checked; scheduleRun(); });
+
+document.getElementById('csvFile').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{ POLLS=parseCSV(rd.result); if(POLLS.length){applyPolls();} else alert('Δεν βρέθηκαν έγκυρες γραμμές στο CSV.'); }
+    catch(err){ alert('Σφάλμα ανάγνωσης CSV: '+err.message); } };
+  rd.readAsText(f,'utf-8');
+});
+document.getElementById('sampleBtn').onclick=()=>{ POLLS=parseCSV(SAMPLE_CSV); applyPolls(); };
+document.getElementById('tmplBtn').onclick=downloadTemplate;
+document.getElementById('hlRange').addEventListener('input',e=>{ halfLife=+e.target.value;
+  document.getElementById('hlVal').textContent=halfLife+' ημ.'; if(POLLS){applyPolls();} });
+
+/* ---------- live data feed (from backend latest.json) ---------- */
+const LIVE_URL = (typeof window!=='undefined' && window.LIVE_URL) || 'api/latest.json';
+async function loadLive(){
+  try{
+    const res = await fetch(LIVE_URL, {cache:'no-store'});
+    if(!res.ok) return;
+    const j = await res.json();
+    if(!j.polls || !j.polls.length) return;
+    POLLS = j.polls.map(p=>({
+      date:new Date(p.date), pollster:p.pollster||'—',
+      sample:+p.sample||900, reliability: (p.reliability??null),
+      vals: PKEYS.map(k=> +(p.vals?.[k] ?? 0))
+    })).filter(p=>!isNaN(p.date)).sort((a,b)=>a.date-b.date);
+    if(j.econ) Object.assign(econ, j.econ);
+    applyPolls();
+    if(j.sentiment){ PKEYS.forEach((k,i)=>{ if(k in j.sentiment) state[i].d30=+j.sentiment[k]; }); buildSliders(); renderFundamentals(); }
+    if(j.quality){ renderQuality(j.quality); }
+    const ts = j.generated_at? new Date(j.generated_at).toLocaleString('el-GR') : '';
+    document.getElementById('dataStatus').innerHTML=`🟢 Ζωντανά δεδομένα · <b>${POLLS.length} δημοσκοπήσεις</b>${ts?' · ενημέρωση '+ts:''}`;
+  }catch(e){ /* offline / opened as local file — keep manual snapshot silently */ }
+}
+
+function renderQuality(q){
+  const pct=x=> x==null? '—' : Math.round(x*100)+'%';
+  const cls=l=> l==='Υψηλή'?'high':(l==='Μέτρια'?'mid':'low');
+  document.getElementById('qualityPanel').style.display='block';
+  document.getElementById('qCards').innerHTML=`
+    <div class="qcard"><div class="ql">Ποιότητα τεκμηρίωσης</div>
+      <div class="qv"><span class="qbadge ${cls(q.evidence_quality)}">${q.evidence_quality}</span></div>
+      <div class="qs">συνολικός δείκτης ${pct(q.evidence_score)}</div></div>
+    <div class="qcard"><div class="ql">Συμφωνία εταιρειών</div>
+      <div class="qv">${pct(q.agreement_index)}</div>
+      <div class="qs">διασπορά 1ου κόμματος ±${q.first_party_dispersion ?? '—'} μον.</div></div>
+    <div class="qcard"><div class="ql">Πρόσφατες μετρήσεις</div>
+      <div class="qv">${q.n_last_14d}<span style="font-size:14px;color:var(--muted)"> / 14ημ</span></div>
+      <div class="qs">${q.n_last_30d} τις τελευταίες 30 ημέρες</div></div>
+    <div class="qcard"><div class="ql">Μέση ποιότητα μετρήσεων</div>
+      <div class="qv">${pct(q.mean_quality)}</div>
+      <div class="qs">μέσο δείγμα: ${q.mean_sample ?? 'μη δηλωμένο'}</div></div>`;
+  document.getElementById('qNotes').innerHTML=(q.notes||[]).map(n=>`<div class="qnote">⚠ ${n}</div>`).join('');
+  const rows=(q.per_poll||[]).map(p=>`
+    <tr>
+      <td>${p.date}</td>
+      <td><b>${p.pollster}</b>${p.commissioner?` <span style="color:var(--muted)">/ ${p.commissioner}</span>`:''}
+        ${(p.flags||[]).map(f=>`<span class="qflag">⚠ ${f}</span>`).join('')}</td>
+      <td>${p.method||'—'}</td>
+      <td>${p.sample||'—'}</td>
+      <td>${p.moe!=null?'±'+p.moe:'—'}</td>
+      <td><span class="qbartrack"><span class="qbar" style="width:${Math.round(p.quality*60)}px"></span></span>${Math.round(p.quality*100)}%</td>
+    </tr>`).join('');
+  document.getElementById('qTable').innerHTML=
+    `<thead><tr><th>Ημ/νία</th><th>Εταιρεία / εντολέας</th><th>Μέθοδος</th><th>Δείγμα</th><th>MoE</th><th>Ποιότητα</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+buildSliders();
+runNow();
+loadLive();
+</script>
+</body>
+</html>

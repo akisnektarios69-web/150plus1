@@ -1,0 +1,8 @@
+numpy>=1.26
+fastapi>=0.110
+uvicorn[standard]>=0.29
+requests>=2.31
+feedparser>=6.0
+# optional, only for TransformerScorer:
+# transformers>=4.40
+# torch>=2.2
