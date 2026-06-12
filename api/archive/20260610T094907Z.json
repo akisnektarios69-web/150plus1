@@ -1,0 +1,501 @@
+{
+  "generated_at": "2026-06-10T09:49:07.026377+00:00",
+  "reference_date": "2026-06-06",
+  "half_life_days": 21,
+  "polls": [
+    {
+      "date": "2026-04-10",
+      "pollster": "—",
+      "sample": null,
+      "reliability": null,
+      "vals": {
+        "ND": 28.0,
+        "ELAS": 12.0,
+        "PASOK": 12.0,
+        "ELPIDA": 8.0,
+        "EL": 7.4,
+        "KKE": 6.8,
+        "PE": 6.6,
+        "FL": 3.3,
+        "SAM": 0.0
+      }
+    },
+    {
+      "date": "2026-05-05",
+      "pollster": "—",
+      "sample": null,
+      "reliability": null,
+      "vals": {
+        "ND": 27.0,
+        "ELAS": 13.0,
+        "PASOK": 11.5,
+        "ELPIDA": 9.0,
+        "EL": 7.2,
+        "KKE": 6.6,
+        "PE": 6.4,
+        "FL": 3.4,
+        "SAM": 0.0
+      }
+    },
+    {
+      "date": "2026-05-29",
+      "pollster": "Opinion Poll",
+      "sample": null,
+      "reliability": null,
+      "vals": {
+        "ND": 25.6,
+        "ELAS": 13.5,
+        "PASOK": 10.0,
+        "ELPIDA": 11.0,
+        "EL": 6.8,
+        "KKE": 6.2,
+        "PE": 6.0,
+        "FL": 3.4,
+        "SAM": 0.0
+      }
+    },
+    {
+      "date": "2026-06-02",
+      "pollster": "GPO",
+      "sample": null,
+      "reliability": null,
+      "vals": {
+        "ND": 25.0,
+        "ELAS": 13.0,
+        "PASOK": 11.0,
+        "ELPIDA": 10.5,
+        "EL": 7.0,
+        "KKE": 6.0,
+        "PE": 6.0,
+        "FL": 3.4,
+        "SAM": 0.0
+      }
+    },
+    {
+      "date": "2026-06-04",
+      "pollster": "Metron Analysis",
+      "sample": null,
+      "reliability": null,
+      "vals": {
+        "ND": 22.7,
+        "ELAS": 12.1,
+        "PASOK": 9.0,
+        "ELPIDA": 8.3,
+        "EL": 4.8,
+        "KKE": 4.7,
+        "PE": 5.4,
+        "FL": 3.3,
+        "SAM": 0.0
+      }
+    },
+    {
+      "date": "2026-06-06",
+      "pollster": "Marc",
+      "sample": null,
+      "reliability": null,
+      "vals": {
+        "ND": 26.7,
+        "ELAS": 14.0,
+        "PASOK": 9.5,
+        "ELPIDA": 9.5,
+        "EL": 6.5,
+        "KKE": 6.0,
+        "PE": 6.0,
+        "FL": 3.4,
+        "SAM": 0.0
+      }
+    }
+  ],
+  "reliability": {
+    "—": 0.752,
+    "Opinion Poll": 0.842,
+    "GPO": 0.841,
+    "Metron Analysis": 0.624,
+    "Marc": 0.815
+  },
+  "econ": {
+    "growth": 2.1,
+    "inflation": 2.9,
+    "unemp": 9.5,
+    "conf": -52.2
+  },
+  "health_index": -0.196,
+  "sentiment": {
+    "ND": 0.094,
+    "ELAS": 0.25,
+    "PASOK": 0.143,
+    "ELPIDA": 0.0,
+    "EL": 0.0,
+    "KKE": 0.0,
+    "PE": 0.0,
+    "FL": 0.0,
+    "SAM": 0.0
+  },
+  "quality": {
+    "per_poll": [
+      {
+        "date": "2026-06-06",
+        "pollster": "Marc",
+        "commissioner": null,
+        "method": "τηλεφωνική",
+        "sample": null,
+        "moe": null,
+        "undecided": null,
+        "age_days": 0,
+        "recency": 1.0,
+        "sample_adequacy": 0.45,
+        "method_score": 1.0,
+        "transparency": 0.25,
+        "accuracy": 0.81,
+        "quality": 0.75,
+        "flags": [
+          "δεν δημοσιοποιείται μέγεθος δείγματος"
+        ],
+        "source": "iefimerida.gr",
+        "note": "ΝΔ/ΕΛΑΣ/Ελπίδα από πηγή· λοιπά εκτίμηση"
+      },
+      {
+        "date": "2026-06-04",
+        "pollster": "Metron Analysis",
+        "commissioner": null,
+        "method": "μικτή",
+        "sample": null,
+        "moe": null,
+        "undecided": 13.1,
+        "age_days": 2,
+        "recency": 0.94,
+        "sample_adequacy": 0.45,
+        "method_score": 0.85,
+        "transparency": 0.5,
+        "accuracy": 0.62,
+        "quality": 0.709,
+        "flags": [
+          "δεν δημοσιοποιείται μέγεθος δείγματος",
+          "υψηλό ποσοστό αναποφάσιστων"
+        ],
+        "source": "ethnos.gr/dnews",
+        "note": "ΝΔ/ΕΛΑΣ/ΠΑΣΟΚ/Ελπίδα/ΠΕ/ΕΛ/ΚΚΕ από πηγή (πρόθεση ψήφου)· ΦΛ εκτίμηση"
+      },
+      {
+        "date": "2026-06-02",
+        "pollster": "GPO",
+        "commissioner": null,
+        "method": "τηλεφωνική",
+        "sample": null,
+        "moe": null,
+        "undecided": null,
+        "age_days": 4,
+        "recency": 0.88,
+        "sample_adequacy": 0.45,
+        "method_score": 1.0,
+        "transparency": 0.25,
+        "accuracy": 0.84,
+        "quality": 0.716,
+        "flags": [
+          "δεν δημοσιοποιείται μέγεθος δείγματος"
+        ],
+        "source": "skai.gr",
+        "note": "ΝΔ/Ελπίδα από πηγή (εκτίμηση)· λοιπά εκτίμηση"
+      },
+      {
+        "date": "2026-05-29",
+        "pollster": "Opinion Poll",
+        "commissioner": "Action24",
+        "method": "μικτή",
+        "sample": null,
+        "moe": null,
+        "undecided": null,
+        "age_days": 8,
+        "recency": 0.77,
+        "sample_adequacy": 0.45,
+        "method_score": 0.85,
+        "transparency": 0.5,
+        "accuracy": 0.84,
+        "quality": 0.691,
+        "flags": [
+          "δεν δημοσιοποιείται μέγεθος δείγματος"
+        ],
+        "source": "tribune.gr",
+        "note": "ΝΔ από πηγή· σειρά κομμάτων από πηγή· τιμές εκτίμηση"
+      },
+      {
+        "date": "2026-05-05",
+        "pollster": "—",
+        "commissioner": null,
+        "method": null,
+        "sample": null,
+        "moe": null,
+        "undecided": null,
+        "age_days": 32,
+        "recency": 0.34,
+        "sample_adequacy": 0.45,
+        "method_score": 0.5,
+        "transparency": 0.0,
+        "accuracy": 0.75,
+        "quality": 0.406,
+        "flags": [
+          "δεν δημοσιοποιείται μέγεθος δείγματος",
+          "παλαιότερη των 30 ημερών"
+        ],
+        "source": null,
+        "note": "ενδεικτικό (βάθος γραφήματος τάσης)"
+      },
+      {
+        "date": "2026-04-10",
+        "pollster": "—",
+        "commissioner": null,
+        "method": null,
+        "sample": null,
+        "moe": null,
+        "undecided": null,
+        "age_days": 57,
+        "recency": 0.15,
+        "sample_adequacy": 0.45,
+        "method_score": 0.5,
+        "transparency": 0.0,
+        "accuracy": 0.75,
+        "quality": 0.348,
+        "flags": [
+          "δεν δημοσιοποιείται μέγεθος δείγματος",
+          "παλαιότερη των 30 ημερών"
+        ],
+        "source": null,
+        "note": "ενδεικτικό (βάθος γραφήματος τάσης)"
+      }
+    ],
+    "n_polls": 6,
+    "n_last_14d": 4,
+    "n_last_30d": 4,
+    "mean_sample": null,
+    "method_mix": {
+      "άγνωστη": 2,
+      "μικτή": 2,
+      "τηλεφωνική": 2
+    },
+    "undecided_avg": 13.1,
+    "first_party_dispersion": 1.46,
+    "agreement_index": 0.71,
+    "mean_quality": 0.603,
+    "evidence_quality": "Μέτρια",
+    "evidence_score": 0.66,
+    "notes": [
+      "Ελλιπής δημοσιοποίηση μεγέθους δείγματος (χαμηλή διαφάνεια)."
+    ]
+  },
+  "base_pct": {
+    "ND": 25.4,
+    "ELAS": 13.2,
+    "PASOK": 10.1,
+    "ELPIDA": 9.8,
+    "EL": 6.4,
+    "KKE": 5.9,
+    "PE": 5.9,
+    "FL": 3.4,
+    "SAM": 0.0
+  },
+  "effective_pct": {
+    "ND": 24.39,
+    "ELAS": 13.55,
+    "PASOK": 9.86,
+    "ELPIDA": 10.15,
+    "EL": 6.27,
+    "KKE": 5.77,
+    "PE": 5.85,
+    "FL": 3.47,
+    "SAM": 0.07
+  },
+  "results": {
+    "parties": [
+      {
+        "key": "ND",
+        "short": "ΝΔ",
+        "name": "Νέα Δημοκρατία",
+        "color": "#1f4f9c",
+        "pct": 24.4,
+        "mean_seats": 100.1,
+        "rep_seats": 100,
+        "low90": 64,
+        "high90": 137
+      },
+      {
+        "key": "ELAS",
+        "short": "ΕΛ.Α.Σ.",
+        "name": "ΕΛ.Α.Σ.",
+        "color": "#e6a532",
+        "pct": 13.6,
+        "mean_seats": 50.5,
+        "rep_seats": 51,
+        "low90": 36,
+        "high90": 66
+      },
+      {
+        "key": "PASOK",
+        "short": "ΠΑΣΟΚ",
+        "name": "ΠΑΣΟΚ – ΚΙΝΑΛ",
+        "color": "#179b54",
+        "pct": 9.9,
+        "mean_seats": 36.1,
+        "rep_seats": 36,
+        "low90": 21,
+        "high90": 52
+      },
+      {
+        "key": "ELPIDA",
+        "short": "ΕΛΠΙΔΑ",
+        "name": "Ελπίδα",
+        "color": "#c8a96b",
+        "pct": 10.2,
+        "mean_seats": 37.6,
+        "rep_seats": 38,
+        "low90": 23,
+        "high90": 53
+      },
+      {
+        "key": "EL",
+        "short": "ΕΛ",
+        "name": "Ελληνική Λύση",
+        "color": "#7aa6d6",
+        "pct": 6.3,
+        "mean_seats": 23.1,
+        "rep_seats": 23,
+        "low90": 14,
+        "high90": 34
+      },
+      {
+        "key": "KKE",
+        "short": "ΚΚΕ",
+        "name": "ΚΚΕ",
+        "color": "#c8202a",
+        "pct": 5.8,
+        "mean_seats": 21.1,
+        "rep_seats": 21,
+        "low90": 13,
+        "high90": 31
+      },
+      {
+        "key": "PE",
+        "short": "ΠΕ",
+        "name": "Πλεύση Ελευθερίας",
+        "color": "#7d4a98",
+        "pct": 5.8,
+        "mean_seats": 21.4,
+        "rep_seats": 21,
+        "low90": 13,
+        "high90": 31
+      },
+      {
+        "key": "FL",
+        "short": "ΦΛ",
+        "name": "Φωνή Λογικής",
+        "color": "#2b333f",
+        "pct": 3.5,
+        "mean_seats": 10.1,
+        "rep_seats": 10,
+        "low90": 0,
+        "high90": 21
+      },
+      {
+        "key": "SAM",
+        "short": "ΣΑΜ",
+        "name": "Κόμμα Σαμαρά (αναμενόμενο)",
+        "color": "#0d5b8c",
+        "pct": 0.1,
+        "mean_seats": 0.0,
+        "rep_seats": 0,
+        "low90": 0,
+        "high90": 0
+      }
+    ],
+    "self_sufficiency": 0.0105,
+    "first_seats_low90": 67,
+    "first_seats_high90": 137,
+    "parties_in_parliament": 8,
+    "coalitions": [
+      {
+        "members": [
+          "ND",
+          "ELAS",
+          "ELPIDA"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΕΛ.Α.Σ.",
+          "ΕΛΠΙΔΑ"
+        ],
+        "mean_seats": 188.2,
+        "p_majority": 0.99
+      },
+      {
+        "members": [
+          "ND",
+          "ELAS",
+          "PASOK"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΕΛ.Α.Σ.",
+          "ΠΑΣΟΚ"
+        ],
+        "mean_seats": 186.7,
+        "p_majority": 0.985
+      },
+      {
+        "members": [
+          "ND",
+          "PASOK",
+          "ELPIDA"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΠΑΣΟΚ",
+          "ΕΛΠΙΔΑ"
+        ],
+        "mean_seats": 173.8,
+        "p_majority": 0.894
+      },
+      {
+        "members": [
+          "ND",
+          "ELAS",
+          "EL"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΕΛ.Α.Σ.",
+          "ΕΛ"
+        ],
+        "mean_seats": 173.6,
+        "p_majority": 0.8875
+      },
+      {
+        "members": [
+          "ND",
+          "ELAS",
+          "PE"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΕΛ.Α.Σ.",
+          "ΠΕ"
+        ],
+        "mean_seats": 172.0,
+        "p_majority": 0.87
+      },
+      {
+        "members": [
+          "ND",
+          "ELAS",
+          "KKE"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΕΛ.Α.Σ.",
+          "ΚΚΕ"
+        ],
+        "mean_seats": 171.6,
+        "p_majority": 0.862
+      }
+    ],
+    "n_sims": 2000
+  }
+}
