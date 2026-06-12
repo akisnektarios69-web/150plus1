@@ -35,6 +35,19 @@ PARTIES = [
 
 PKEYS = [p["key"] for p in PARTIES]
 
+# ----- Πολιτική συμβατότητα συνασπισμών (επεξεργάσιμο) ---------------------
+# Ζεύγη που θεωρούνται πολιτικά μη ρεαλιστικά σε κυβερνητικό σχηματισμό.
+# Το ΚΚΕ ιστορικά αρνείται συμμετοχή σε κυβερνήσεις συνεργασίας (KKE_SOLO).
+INCOMPATIBLE_PAIRS = [
+    ("ND", "ELAS"), ("ND", "PE"), ("ND", "ELPIDA"),
+    ("ELAS", "EL"), ("ELAS", "FL"), ("ELAS", "SAM"),
+    ("PASOK", "EL"), ("PASOK", "FL"),
+    ("ELPIDA", "EL"), ("ELPIDA", "FL"), ("ELPIDA", "SAM"),
+    ("PE", "EL"), ("PE", "FL"), ("PE", "SAM"),
+]
+KKE_SOLO = True  # το ΚΚΕ δεν μετέχει σε κανέναν κυβερνητικό συνασπισμό
+# ---------------------------------------------------------------------------
+
 # Economic fallback values (used when live APIs are unreachable)
 ECON_FALLBACK = {"growth": 2.1, "inflation": 5.0, "unemp": 9.5, "conf": -52.2}
 

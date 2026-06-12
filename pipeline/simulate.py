@@ -10,8 +10,73 @@ a single deterministic allocation, so we always report the simulated mean.
 import itertools
 import numpy as np
 
-from config import PARTIES, PKEYS, SEATS, MAJORITY, N_SIMS, THRESHOLD
+from config import (PARTIES, PKEYS, SEATS, MAJORITY, N_SIMS, THRESHOLD,
+                    INCOMPATIBLE_PAIRS, KKE_SOLO)
 from pipeline.electoral_law import allocate, first_party_bonus
+
+_INC = {(a, b) for a, b in INCOMPATIBLE_PAIRS} | {(b, a) for a, b in INCOMPATIBLE_PAIRS}
+
+
+def is_feasible(keys):
+    """Πολιτική συμβατότητα ενός συνδυασμού κομμάτων."""
+    if KKE_SOLO and "KKE" in keys and len(keys) > 1:
+        return False
+    for a, b in itertools.combinations(keys, 2):
+        if (a, b) in _INC:
+            return False
+    return True
+
+
+def banzhaf(seat_samples, feasible_only=True):
+    """Δείκτης διαπραγματευτικής ισχύος Banzhaf, μέσος όρος στα σενάρια.
+
+    Για κάθε σενάριο μετράμε σε πόσους (εφικτούς) συνασπισμούς κάθε κόμμα
+    είναι «κρίσιμο»: η αποχώρησή του ρίχνει τον συνασπισμό κάτω από 151.
+    Επιστρέφει κανονικοποιημένο δείκτη ανά κόμμα (άθροισμα 1).
+    """
+    n_sims, n = seat_samples.shape
+    masks = np.array([[(c >> i) & 1 for i in range(n)]
+                      for c in range(1, 2 ** n)], dtype=np.int8)   # (C, n)
+    if feasible_only:
+        ok = np.array([is_feasible([PKEYS[i] for i in range(n) if m[i]])
+                       for m in masks], dtype=bool)
+        masks = masks[ok]
+    totals = seat_samples @ masks.T                                # (sims, C)
+    wins = totals >= MAJORITY
+    swings = np.zeros(n)
+    for i in range(n):
+        has_i = masks[:, i] == 1
+        without = totals[:, has_i] - seat_samples[:, [i]]
+        swings[i] = (wins[:, has_i] & (without < MAJORITY)).sum()
+    s = swings.sum()
+    return (swings / s).round(4).tolist() if s > 0 else [0.0] * n
+
+
+def majority_math(base):
+    """Κατώφλι αυτοδυναμίας δεδομένης της «χαμένης ψήφου».
+
+    wasted = λοιπά (εκτός λίστας) + κόμματα της λίστας κάτω του 3%.
+    E = 100 - wasted = άθροισμα εγκύρων που μοιράζονται έδρες.
+    Λύνουμε αριθμητικά: bonus(nd) + (300 - bonus(nd)) * nd/E >= 151.
+    """
+    listed = sum(base)
+    sub3 = sum(p for p in base if p < THRESHOLD)
+    wasted = max(0.0, 100.0 - listed) + sub3
+    E = max(1.0, 100.0 - wasted)
+    needed = None
+    nd = 20.0
+    while nd <= E:
+        b = first_party_bonus(nd)
+        if b + (SEATS - b) * nd / E >= MAJORITY:
+            needed = round(nd, 1)
+            break
+        nd += 0.1
+    first = max(base)
+    return {
+        "wasted_share": round(wasted, 1),
+        "majority_need_pct": needed,
+        "majority_gap": round(needed - first, 1) if needed else None,
+    }
 
 
 def _round_to_sum(vals, target):
@@ -77,6 +142,8 @@ def simulate(base_pct, vol_mult=None, n_sims=N_SIMS, seed=None):
         "first_seats_high90": int(np.percentile(first_seats, 95)),
         "parties_in_parliament": int(sum(1 for p in base if p >= THRESHOLD)),
         "coalitions": coalitions,
+        "banzhaf": {PKEYS[i]: v for i, v in enumerate(banzhaf(seat_samples))},
+        "majority_math": majority_math(list(base)),
         "n_sims": n_sims,
     }
 
@@ -94,11 +161,17 @@ def _coalitions(seat_samples):
         mean = float(tot.mean())
         if mean < 120:
             continue
+        keys = [PKEYS[i] for i in combo]
         evald.append({
-            "members": [PKEYS[i] for i in combo],
+            "members": keys,
             "labels": [PARTIES[i]["short"] for i in combo],
             "mean_seats": round(mean, 1),
             "p_majority": round(float((tot >= MAJORITY).mean()), 4),
+            "feasible": is_feasible(keys),
         })
-    evald.sort(key=lambda c: (-c["p_majority"], len(c["members"]), -c["mean_seats"]))
-    return evald[:6]
+    # εφικτοί πρώτοι, μετά κατά πιθανότητα πλειοψηφίας / λιγότερα κόμματα
+    evald.sort(key=lambda c: (not c["feasible"], -c["p_majority"],
+                              len(c["members"]), -c["mean_seats"]))
+    feasible = [c for c in evald if c["feasible"]][:6]
+    infeasible = [c for c in evald if not c["feasible"]][:3]
+    return feasible + infeasible

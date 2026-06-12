@@ -48,8 +48,10 @@ def compute_reliability(polls, half_life=HALF_LIFE_DAYS):
 
 
 def aggregate_at(polls, ref_date, rel_map, half_life=HALF_LIFE_DAYS):
-    wsum = 0.0
-    agg = [0.0] * len(PKEYS)
+    n = len(PKEYS)
+    wsum = [0.0] * n          # ανά κόμμα: το 0 σε παλιά μέτρηση = «δεν μετρήθηκε»
+    agg = [0.0] * n
+    any_w = 0.0
     for p in polls:
         if p["date"] > ref_date:
             continue
@@ -59,12 +61,14 @@ def aggregate_at(polls, ref_date, rel_map, half_life=HALF_LIFE_DAYS):
              * _method_score(p.get("method")))
         if w <= 0:
             continue
-        wsum += w
+        any_w += w
         for i, v in enumerate(p["vals"]):
-            agg[i] += v * w
-    if wsum <= 0:
+            if v > 0:
+                agg[i] += v * w
+                wsum[i] += w
+    if any_w <= 0:
         return None
-    return [v / wsum for v in agg]
+    return [(agg[i] / wsum[i] if wsum[i] > 0 else 0.0) for i in range(n)]
 
 
 def compute_volatility(polls, ref_date, rel_map, half_life=HALF_LIFE_DAYS):

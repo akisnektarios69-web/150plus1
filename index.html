@@ -195,6 +195,21 @@
   .qbar{display:inline-block;height:7px;border-radius:5px;background:var(--navy);vertical-align:middle}
   .qbartrack{display:inline-block;width:60px;height:7px;border-radius:5px;background:#0000000d;vertical-align:middle;margin-right:6px}
   .qflag{font-size:10.5px;color:var(--warn);display:block}
+  .coal.infeasible{opacity:.5;filter:saturate(.6)}
+  .coal .badge.feas{background:#1f3a6312;color:var(--navy)}
+  .coal .badge.inf{background:#0000000d;color:var(--muted)}
+  .bzrow{display:grid;grid-template-columns:90px 1fr 56px;gap:10px;align-items:center;font-size:13px;margin-bottom:8px}
+  .bzrow .bn{font-weight:600;display:flex;align-items:center;gap:7px}
+  .bzbar{height:12px;border-radius:6px;background:#0000000a;overflow:hidden}
+  .bzbar i{display:block;height:100%;border-radius:6px}
+  .bzval{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+  .sam-row{display:grid;grid-template-columns:78px 1fr 44px;gap:9px;align-items:center;margin-bottom:9px;font-size:12.5px}
+  .sam-row b{font-variant-numeric:tabular-nums;text-align:right}
+  .cliff{margin-top:10px;font-size:12px;padding:8px 11px;border-radius:8px}
+  .cliff.ok{background:#1f8a5212;color:var(--good)}
+  .cliff.danger{background:#b3201e14;color:var(--accent);font-weight:600}
+  .report-box{font-size:14px;line-height:1.75;color:#2c333d}
+  .report-box .stamp{font-size:11px;color:var(--ink-soft);margin-top:10px;letter-spacing:.05em}
 </style>
 </head>
 <body>
@@ -229,13 +244,33 @@
       <div class="ph"><h2>Προσομοιωτής σεναρίων</h2><p>Ρυθμίστε την πρόθεση ψήφου. Όσα μένουν κάτω από το <b>3%</b> δεν λαμβάνουν έδρες.</p></div>
       <div class="pb">
         <div id="sliders"></div>
-        <div class="others">Λοιπά / κάτω 3% <b id="othersVal">10,7%</b></div>
+        <div class="others" style="display:block">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">Λοιπά / «χαμένη ψήφος» εκτός λίστας <b id="othersVal">10,7%</b></div>
+          <input type="range" id="othersRange" min="0" max="30" step="0.5" value="10.7" style="--cc:#8a8273;width:100%">
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:3px">Αυξήστε το για να δείτε πώς η χαμένη ψήφος ρίχνει το κατώφλι αυτοδυναμίας.</div>
+        </div>
         <div class="others" style="border-top:none;padding-top:6px">Σύνολο κομμάτων <b id="sumVal">89,3%</b></div>
         <div class="ctrls">
           <button class="btn primary" id="snapBtn">Τρέξε προσομοίωση</button>
           <button class="btn" id="resetBtn">Επαναφορά</button>
         </div>
         <div class="simnote"><span class="dot" id="simDot"></span><span id="simTxt">1.000 προσομοιώσεις · ολοκληρώθηκε</span></div>
+      </div>
+    </section>
+
+    <section class="panel stagger" style="grid-column:1;animation-delay:.1s">
+      <div class="ph"><h2>Σενάριο Σαμαρά</h2><p>Ορίστε ποσοστό για το νέο κόμμα και από πού αντλεί ψηφοφόρους — δείτε τον «γκρεμό» του 25% για τη ΝΔ.</p></div>
+      <div class="pb">
+        <div class="sam-row"><span style="font-weight:700">ΣΑΜ στόχος</span>
+          <input type="range" id="samTarget" min="0" max="15" step="0.5" value="6" style="--cc:#0d5b8c">
+          <b id="samTargetV">6,0%</b></div>
+        <div style="font-size:11px;color:var(--muted);margin:4px 0 8px">Πηγές ψηφοφόρων (σχετικά βάρη):</div>
+        <div class="sam-row"><span>από ΝΔ</span><input type="range" id="samW_ND" min="0" max="100" value="50" style="--cc:#1f4f9c"><b id="samW_NDv">50</b></div>
+        <div class="sam-row"><span>από ΕΛ</span><input type="range" id="samW_EL" min="0" max="100" value="20" style="--cc:#7aa6d6"><b id="samW_ELv">20</b></div>
+        <div class="sam-row"><span>από ΦΛ</span><input type="range" id="samW_FL" min="0" max="100" value="15" style="--cc:#2b333f"><b id="samW_FLv">15</b></div>
+        <div class="sam-row"><span>από ΕΛΠΙΔΑ</span><input type="range" id="samW_ELPIDA" min="0" max="100" value="15" style="--cc:#c8a96b"><b id="samW_ELPIDAv">15</b></div>
+        <div class="ctrls"><button class="btn primary" id="samApply">Εφαρμογή σεναρίου</button></div>
+        <div class="cliff ok" id="cliffBox">ΝΔ μετά το σενάριο: —</div>
       </div>
     </section>
 
@@ -254,6 +289,7 @@
             <svg id="gauge" viewBox="0 0 220 130" width="100%" height="138" aria-label="gauge"></svg>
             <div class="gval" id="gaugeVal">1%</div>
             <div class="glab">κατώφλι αυτοδυναμίας: <b>151</b> έδρες</div>
+            <div id="majPath" style="margin-top:12px;text-align:left;font-size:12.5px;background:#1f3a630a;border-radius:9px;padding:10px 12px;line-height:1.7"></div>
           </div>
         </div>
         <div class="panel">
@@ -271,6 +307,7 @@
         <div class="pb trendwrap">
           <svg id="trend" viewBox="0 0 900 360" width="100%" height="auto" preserveAspectRatio="xMidYMid meet"></svg>
           <div class="trend-legend" id="trendLegend"></div>
+          <div id="gapStrip" style="margin-top:12px;font-size:12.5px;background:#b3201e08;border-left:3px solid var(--accent);border-radius:7px;padding:9px 12px;display:none"></div>
         </div>
       </div>
 
@@ -278,9 +315,18 @@
       <p class="secsub stagger" style="animation-delay:.26s">Σταθμισμένο ποσοστό, εκτίμηση εδρών (μέσος όρος) και εύρος αβεβαιότητας 90%.</p>
       <div class="panel stagger" style="animation-delay:.3s"><div class="pb"><div class="ptable" id="ptable"></div></div></div>
 
+      <div class="panel stagger" id="reportPanel" style="display:none;margin-bottom:22px">
+        <div class="ph"><h2>Ημερήσιο Δελτίο</h2><p>Γράφεται αυτόματα από το μοντέλο σε κάθε ανανέωση</p></div>
+        <div class="pb report-box"><div id="reportText"></div><div class="stamp" id="reportStamp"></div></div>
+      </div>
+
       <h2 class="sectitle stagger" style="animation-delay:.34s">Πιθανοί Συνασπισμοί</h2>
       <p class="secsub stagger" style="animation-delay:.34s">Συνδυασμοί που μπορούν να σχηματίσουν κυβέρνηση πλειοψηφίας — κατώφλι 151 έδρες.</p>
       <div class="coals stagger" id="coals" style="animation-delay:.38s"></div>
+
+      <h2 class="sectitle">Δείκτης Διαπραγματευτικής Ισχύος</h2>
+      <p class="secsub">Banzhaf: σε πόσους πολιτικά εφικτούς σχηματισμούς πλειοψηφίας κάθε κόμμα είναι «κρίσιμο» — η πραγματική μετεκλογική του δύναμη.</p>
+      <div class="panel"><div class="pb" id="banzhaf"></div></div>
 
       <div class="fund-head stagger" style="animation-delay:.4s">
         <div>
@@ -495,6 +541,41 @@ function roundToSum(vals,target){
   return fl;
 }
 
+/* ---------- political feasibility ---------- */
+const INCOMPAT=[["ND","ELAS"],["ND","PE"],["ND","ELPIDA"],["ELAS","EL"],["ELAS","FL"],["ELAS","SAM"],
+ ["PASOK","EL"],["PASOK","FL"],["ELPIDA","EL"],["ELPIDA","FL"],["ELPIDA","SAM"],["PE","EL"],["PE","FL"],["PE","SAM"]];
+const INCSET=new Set(INCOMPAT.flatMap(([a,b])=>[a+"|"+b,b+"|"+a]));
+function isFeasible(keys){
+  if(keys.includes("KKE")&&keys.length>1)return false;
+  for(let i=0;i<keys.length;i++)for(let j=i+1;j<keys.length;j++)
+    if(INCSET.has(keys[i]+"|"+keys[j]))return false;
+  return true;
+}
+/* ---------- Banzhaf power index (feasible coalitions only) ---------- */
+function computeBanzhaf(rep){
+  const n=rep.length, idx=[...Array(n).keys()].filter(i=>rep[i]>0);
+  const swings=new Array(n).fill(0);
+  const total=1<<idx.length;
+  for(let m=1;m<total;m++){
+    const keys=[],is=[];let sum=0;
+    for(let b=0;b<idx.length;b++) if(m&(1<<b)){is.push(idx[b]);keys.push(state[idx[b]].key);sum+=rep[idx[b]];}
+    if(sum<MAJORITY||!isFeasible(keys))continue;
+    for(const i of is) if(sum-rep[i]<MAJORITY) swings[i]++;
+  }
+  const s=swings.reduce((a,b)=>a+b,0);
+  return s>0? swings.map(x=>x/s) : swings;
+}
+function renderBanzhaf(rep){
+  const bz=computeBanzhaf(rep), el=document.getElementById('banzhaf');
+  const order=state.map((p,i)=>i).sort((a,b)=>bz[b]-bz[a]).filter(i=>bz[i]>0.001);
+  if(!order.length){el.innerHTML='<span style="font-size:13px;color:var(--muted)">Καμία εφικτή πλειοψηφία στο τρέχον σενάριο — κανένα κόμμα δεν είναι «κρίσιμο».</span>';return;}
+  const mx=bz[order[0]];
+  el.innerHTML=order.map(i=>`<div class="bzrow">
+    <span class="bn"><span class="swatch" style="background:${state[i].color}"></span>${state[i].short}</span>
+    <span class="bzbar"><i style="width:${(bz[i]/mx*100).toFixed(0)}%;background:${state[i].color}"></i></span>
+    <span class="bzval">${(bz[i]*100).toFixed(0)}%</span></div>`).join('');
+}
+
 /* ---------- coalitions ---------- */
 function buildCoalitions(res){
   const elig = state.map((p,i)=>({i,short:p.short,color:p.color,mean:res.meanSeats[i]}))
@@ -514,12 +595,13 @@ function buildCoalitions(res){
       let t=0; for(const i of set) t+=res.simSeats[s][i];
       sum+=t; if(t>=MAJORITY)maj++;
     }
-    return {set, mean:sum/res.simSeats.length, maj:maj/res.simSeats.length};
+    const keys=set.map(i=>state[i].key);
+    return {set, keys, feasible:isFeasible(keys), mean:sum/res.simSeats.length, maj:maj/res.simSeats.length};
   }).filter(o=>o.mean>=120);
-  // dedupe-ish: prefer higher prob, then fewer parties
-  evald.sort((a,b)=> b.maj-a.maj || a.set.length-b.set.length || b.mean-a.mean);
-  // avoid supersets that don't add probability much: just take top 6 distinct
-  return evald.slice(0,6);
+  evald.sort((a,b)=> (a.feasible===b.feasible?0:(a.feasible?-1:1)) || b.maj-a.maj || a.set.length-b.set.length || b.mean-a.mean);
+  const feas=evald.filter(o=>o.feasible).slice(0,6);
+  const inf=evald.filter(o=>!o.feasible).slice(0,2);
+  return feas.concat(inf);
 }
 
 /* ---------- rendering ---------- */
@@ -620,6 +702,25 @@ function render(res){
   // gauge
   const ss=res.selfSuff; document.getElementById('gaugeVal').textContent=Math.round(ss*100)+'%';
   drawGauge(ss);
+  // απόσταση από την αυτοδυναμία (μαθηματικά νόμου + χαμένη ψήφος)
+  (function(){
+    const listed=eff.reduce((a,b)=>a+b,0);
+    const sub3=eff.filter(v=>v<THRESHOLD).reduce((a,b)=>a+b,0);
+    const wasted=Math.max(0,100-listed)+sub3;
+    const E=Math.max(1,100-wasted);
+    const need=(Ew)=>{for(let nd=20;nd<=Ew;nd+=0.1){let b=0;if(nd>=25)b=Math.min(50,20+Math.floor((nd-25)/0.5));
+      if(b+(SEATS-b)*nd/Ew>=MAJORITY)return Math.round(nd*10)/10;}return null;};
+    const needed=need(E), gap=needed!=null?Math.round((needed-fp)*10)/10:null;
+    const needed1=need(Math.max(1,E-1)); // ευαισθησία: +1 μον. χαμένης ψήφου
+    const sens=needed!=null&&needed1!=null?Math.round((needed-needed1)*10)/10:null;
+    const el=document.getElementById('majPath');
+    if(needed==null){el.innerHTML='—';return;}
+    el.innerHTML=`<b>Απόσταση από την αυτοδυναμία</b><br>
+      Χαμένη ψήφος (εκτός Βουλής): <b>${fmt(wasted)}%</b><br>
+      Κατώφλι αυτοδυναμίας: <b>${fmt(needed)}%</b><br>
+      ${first.short} σήμερα ${fmt(fp)}% → απέχει <b style="color:${gap<=3?'var(--good)':gap<=6?'var(--warn)':'var(--accent)'}">${fmt(Math.max(0,gap))} μονάδες</b>
+      ${sens?`<br><span style="color:var(--ink-soft);font-size:11.5px">κάθε +1 μον. χαμένης ψήφου ρίχνει το κατώφλι ~${fmt(sens)} μον.</span>`:''}`;
+  })();
   // hemicycle + legend
   drawHemicycle(res.rep);
   const leg=document.getElementById('legend'); leg.innerHTML='';
@@ -647,9 +748,10 @@ function render(res){
   coals.forEach(co=>{
     const chips=co.set.map(i=>`<span class="chip" style="background:${state[i].color}">${state[i].short}</span>`).join('');
     const maj=Math.round(co.maj*100);
+    const fb=co.feasible?'<span class="badge feas">πολιτικά εφικτός</span>':'<span class="badge inf">μη ρεαλιστικός</span>';
     coalsEl.innerHTML+=`
-      <div class="coal">
-        <div class="members">${chips}</div>
+      <div class="coal${co.feasible?'':' infeasible'}">
+        <div class="members">${chips}<span style="margin-left:auto">${fb}</span></div>
         <div class="crow">
           <span class="cseats">${fmt0(co.mean)} <small>έδρες</small></span>
           <span class="badge ${co.mean>=MAJORITY?'maj':'no'}">${co.mean>=MAJORITY?'πλειοψηφία':'χωρίς πλειοψηφία'}</span>
@@ -662,6 +764,7 @@ function render(res){
   const rawSum=state.reduce((a,p)=>a+p.pct,0);
   document.getElementById('othersVal').textContent=fmt(Math.max(0,100-rawSum))+'%';
   document.getElementById('sumVal').textContent=fmt(rawSum)+'%';
+  renderBanzhaf(res.rep);
   renderFundamentals();
 }
 
@@ -773,14 +876,15 @@ function computeReliability(polls){
 }
 
 function aggregateAt(polls, refDate, relMap){
-  let wsum=0; const agg=new Array(PKEYS.length).fill(0);
+  const n=PKEYS.length, wsum=new Array(n).fill(0), agg=new Array(n).fill(0); let anyW=0;
   polls.forEach(p=>{ if(p.date>refDate) return;
     const wr = p.reliability!=null? p.reliability : (relMap[p.pollster]||1);
-    const w = timeWeight(p,refDate) * Math.sqrt(p.sample/1000) * wr;
-    if(w<=0) return; wsum+=w; p.vals.forEach((v,i)=>agg[i]+=v*w);
+    const w = timeWeight(p,refDate) * Math.sqrt((p.sample||900)/1000) * wr;
+    if(w<=0) return; anyW+=w;
+    p.vals.forEach((v,i)=>{ if(v>0){agg[i]+=v*w; wsum[i]+=w;} });
   });
-  if(wsum<=0) return null;
-  return {pct:agg.map(v=>v/wsum), wsum};
+  if(anyW<=0) return null;
+  return {pct:agg.map((v,i)=>wsum[i]>0? v/wsum[i]:0), wsum:anyW};
 }
 
 function computeVolatility(polls, relMap, refDate){
@@ -815,8 +919,28 @@ function applyPolls(){
     Object.entries(relMap).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span>${k} <b>${(v).toFixed(2)}</b></span>`).join('');
   buildSliders();
   drawTrend();
+  drawGapPath();
   document.getElementById('trendPanel').style.display='block';
   scheduleRun();
+}
+
+function drawGapPath(){
+  if(!POLLS||!POLLS.length)return;
+  const relMap=computeReliability(POLLS), ref=POLLS[POLLS.length-1].date;
+  const gapAt=(d)=>{const a=aggregateAt(POLLS,d,relMap); if(!a)return null;
+    const listed=a.pct.reduce((x,y)=>x+y,0);
+    const sub3=a.pct.filter(v=>v<THRESHOLD).reduce((x,y)=>x+y,0);
+    const E=Math.max(1,100-(Math.max(0,100-listed)+sub3));
+    let needed=null;
+    for(let nd=20;nd<=E;nd+=0.1){let b=0;if(nd>=25)b=Math.min(50,20+Math.floor((nd-25)/0.5));
+      if(b+(SEATS-b)*nd/E>=MAJORITY){needed=nd;break;}}
+    return needed!=null? needed-Math.max(...a.pct) : null;};
+  const now=gapAt(ref), m1=gapAt(new Date(+ref-30*DAY)), m2=gapAt(new Date(+ref-60*DAY));
+  if(now==null)return;
+  const el=document.getElementById('gapStrip'); el.style.display='block';
+  const trendTxt=(m1!=null)?(now<m1-0.2?'🟢 η απόσταση <b>κλείνει</b>':now>m1+0.2?'🔴 η απόσταση <b>ανοίγει</b>':'⚪ η απόσταση <b>σταθερή</b>'):'';
+  el.innerHTML=`<b>Ο δρόμος προς την αυτοδυναμία:</b> σήμερα το πρώτο κόμμα απέχει <b>${fmt(Math.max(0,now))} μον.</b>
+   ${m1!=null?` · πριν 30 ημ.: ${fmt(Math.max(0,m1))}`:''}${m2!=null?` · πριν 60 ημ.: ${fmt(Math.max(0,m2))}`:''} — ${trendTxt}`;
 }
 
 function drawTrend(){
@@ -881,6 +1005,14 @@ document.getElementById('csvFile').addEventListener('change',e=>{
 });
 document.getElementById('sampleBtn').onclick=()=>{ POLLS=parseCSV(SAMPLE_CSV); applyPolls(); };
 document.getElementById('tmplBtn').onclick=downloadTemplate;
+document.getElementById('othersRange').addEventListener('input',e=>{
+  const target=+e.target.value;
+  const cur=state.reduce((a,p)=>a+p.pct,0);
+  if(cur<=0)return;
+  const scale=(100-target)/cur;
+  state.forEach(p=>p.pct=Math.round(p.pct*scale*10)/10);
+  buildSliders(); scheduleRun();
+});
 document.getElementById('hlRange').addEventListener('input',e=>{ halfLife=+e.target.value;
   document.getElementById('hlVal').textContent=halfLife+' ημ.'; if(POLLS){applyPolls();} });
 
@@ -901,6 +1033,12 @@ async function loadLive(){
     applyPolls();
     if(j.sentiment){ PKEYS.forEach((k,i)=>{ if(k in j.sentiment) state[i].d30=+j.sentiment[k]; }); buildSliders(); renderFundamentals(); }
     if(j.quality){ renderQuality(j.quality); }
+    if(j.report_el){
+      document.getElementById('reportPanel').style.display='block';
+      document.getElementById('reportText').textContent=j.report_el;
+      const ns=j.results&&j.results.n_sims? j.results.n_sims.toLocaleString('el-GR'):'2.000';
+      document.getElementById('reportStamp').textContent=`Παρήχθη αυτόματα · ${ns} προσομοιώσεις server · ${j.generated_at? new Date(j.generated_at).toLocaleString('el-GR'):''}`;
+    }
     const ts = j.generated_at? new Date(j.generated_at).toLocaleString('el-GR') : '';
     document.getElementById('dataStatus').innerHTML=`🟢 Ζωντανά δεδομένα · <b>${POLLS.length} δημοσκοπήσεις</b>${ts?' · ενημέρωση '+ts:''}`;
   }catch(e){ /* offline / opened as local file — keep manual snapshot silently */ }
@@ -938,8 +1076,49 @@ function renderQuality(q){
     `<thead><tr><th>Ημ/νία</th><th>Εταιρεία / εντολέας</th><th>Μέθοδος</th><th>Δείγμα</th><th>MoE</th><th>Ποιότητα</th></tr></thead><tbody>${rows}</tbody>`;
 }
 
+/* ---------- Samaras scenario engine ---------- */
+let samBase=null; // snapshot πριν το σενάριο
+function samUpdateCliff(){
+  const t=+document.getElementById('samTarget').value;
+  document.getElementById('samTargetV').textContent=fmt(t)+'%';
+  ['ND','EL','FL','ELPIDA'].forEach(k=>{
+    document.getElementById('samW_'+k+'v').textContent=document.getElementById('samW_'+k).value;});
+  // προεπισκόπηση ΝΔ μετά
+  const base = samBase || state.map(p=>p.pct);
+  const w={ND:+samW_ND.value,EL:+samW_EL.value,FL:+samW_FL.value,ELPIDA:+samW_ELPIDA.value};
+  const sw=w.ND+w.EL+w.FL+w.ELPIDA||1;
+  const ndIdx=state.findIndex(p=>p.key==='ND');
+  const ndAfter=Math.max(0, base[ndIdx]-t*w.ND/sw);
+  const box=document.getElementById('cliffBox');
+  if(ndAfter<25){ box.className='cliff danger';
+    box.innerHTML=`⚠ ΝΔ μετά: <b>${fmt(ndAfter)}%</b> — ΚΑΤΩ από το 25%: χάνει ΟΛΟ το μπόνους (έως −50 έδρες)`; }
+  else{ box.className='cliff ok';
+    box.innerHTML=`ΝΔ μετά: <b>${fmt(ndAfter)}%</b> — κρατά μπόνους ${Math.min(50,20+Math.floor((ndAfter-25)/0.5))} εδρών`; }
+}
+function samApplyScenario(){
+  if(!samBase) samBase=state.map(p=>p.pct);          // κράτα αφετηρία
+  const t=+document.getElementById('samTarget').value;
+  const w={ND:+samW_ND.value,EL:+samW_EL.value,FL:+samW_FL.value,ELPIDA:+samW_ELPIDA.value};
+  const sw=w.ND+w.EL+w.FL+w.ELPIDA||1;
+  let got=0;
+  Object.keys(w).forEach(k=>{
+    const i=state.findIndex(p=>p.key===k);
+    const take=Math.min(samBase[i], t*w[k]/sw);
+    state[i].pct=Math.round((samBase[i]-take)*10)/10; got+=take;
+  });
+  state.findIndex(p=>p.key==='SAM')>=0 && (state[state.findIndex(p=>p.key==='SAM')].pct=Math.round(got*10)/10);
+  buildSliders(); scheduleRun(); samUpdateCliff();
+}
+['samTarget','samW_ND','samW_EL','samW_FL','samW_ELPIDA'].forEach(id=>
+  document.getElementById(id).addEventListener('input',samUpdateCliff));
+document.getElementById('samApply').onclick=samApplyScenario;
+// reset σεναρίου μέσω της γενικής Επαναφοράς
+const _oldReset=document.getElementById('resetBtn').onclick;
+document.getElementById('resetBtn').onclick=()=>{ samBase=null; _oldReset(); samUpdateCliff(); };
+
 buildSliders();
 runNow();
+samUpdateCliff();
 loadLive();
 </script>
 </body>
