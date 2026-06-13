@@ -15,6 +15,7 @@ from pipeline.normalize import normalize_all
 from pipeline.economy import fetch_economy, health_index
 from pipeline.sentiment import run_sentiment
 from pipeline.quality import aggregate_quality
+from pipeline.constituencies import fetch_2023, allocate_constituencies
 from pipeline.simulate import simulate
 
 API_DIR = os.path.join(os.path.dirname(__file__), "..", "api")
@@ -115,6 +116,21 @@ def build(half_life=HALF_LIFE_DAYS, apply_fund=True):
     print("6) Ποιοτική αξιολόγηση δημοσκοπήσεων …")
     quality = aggregate_quality(polls, agg["reliability"], agg["reference_date"])
 
+    print("7) Κατανομή ανά εκλογική περιφέρεια …")
+    const_block = None
+    try:
+        base2023 = fetch_2023()
+        if base2023:
+            rep = [round(p["mean_seats"]) for p in results["parties"]]
+            d = 300 - sum(rep)
+            rep[max(range(len(rep)), key=lambda i: rep[i])] += d
+            const_block = allocate_constituencies(base2023, eff, rep)
+            print(f"  · {len(const_block['constituencies'])} περιφέρειες (βάση 2023)")
+        else:
+            print("  · χωρίς δεδομένα 2023 — παραλείπεται (fail-safe)")
+    except Exception as e:
+        print(f"  · FAILED ({e}) — παραλείπεται (fail-safe)")
+
     report = make_report(results, agg, econ, H, quality)
 
     out = {
@@ -134,6 +150,7 @@ def build(half_life=HALF_LIFE_DAYS, apply_fund=True):
         "health_index": H,
         "sentiment": sentiment,
         "quality": quality,
+        "constituencies": const_block,
         "base_pct": {PKEYS[i]: base[i] for i in range(len(PKEYS))},
         "effective_pct": {PKEYS[i]: eff[i] for i in range(len(PKEYS))},
         "results": results,

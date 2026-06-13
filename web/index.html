@@ -210,6 +210,11 @@
   .cliff.danger{background:#b3201e14;color:var(--accent);font-weight:600}
   .report-box{font-size:14px;line-height:1.75;color:#2c333d}
   .report-box .stamp{font-size:11px;color:var(--ink-soft);margin-top:10px;letter-spacing:.05em}
+  .ctable{width:100%;border-collapse:collapse;font-size:12.5px}
+  .ctable td{padding:7px 8px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+  .ctable .cn{font-weight:600;white-space:nowrap}
+  .cchip{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:1px 7px;margin:1px 3px 1px 0}
+  #constFilter{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;margin-bottom:10px;background:var(--paper-2)}
 </style>
 </head>
 <body>
@@ -355,6 +360,16 @@
 
 
       <div id="qualityPanel" style="display:none">
+        <div id="constPanel" style="display:none">
+        <h2 class="sectitle">Κατανομή ανά Εκλογική Περιφέρεια</h2>
+        <p class="secsub" id="constMethod"></p>
+        <div class="panel"><div class="pb">
+          <input id="constFilter" placeholder="Αναζήτηση περιφέρειας…">
+          <div style="max-height:420px;overflow:auto"><table class="ctable" id="constTable"></table></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:9px" id="constState"></div>
+        </div></div>
+        </div>
+
         <h2 class="sectitle">Ποιοτική Αξιολόγηση Δημοσκοπήσεων</h2>
         <p class="secsub">Επιστημονική εκτίμηση των μεθοδολογικών χαρακτηριστικών — πόσο αξιόπιστο είναι το κάθε εύρημα.</p>
         <div class="qgrid" id="qCards"></div>
@@ -1033,6 +1048,7 @@ async function loadLive(){
     applyPolls();
     if(j.sentiment){ PKEYS.forEach((k,i)=>{ if(k in j.sentiment) state[i].d30=+j.sentiment[k]; }); buildSliders(); renderFundamentals(); }
     if(j.quality){ renderQuality(j.quality); }
+    if(j.constituencies){ renderConstituencies(j.constituencies); }
     if(j.report_el){
       document.getElementById('reportPanel').style.display='block';
       document.getElementById('reportText').textContent=j.report_el;
@@ -1042,6 +1058,25 @@ async function loadLive(){
     const ts = j.generated_at? new Date(j.generated_at).toLocaleString('el-GR') : '';
     document.getElementById('dataStatus').innerHTML=`🟢 Ζωντανά δεδομένα · <b>${POLLS.length} δημοσκοπήσεις</b>${ts?' · ενημέρωση '+ts:''}`;
   }catch(e){ /* offline / opened as local file — keep manual snapshot silently */ }
+}
+
+function renderConstituencies(cb){
+  const P={}; state.forEach(p=>P[p.key]=p);
+  document.getElementById('constPanel').style.display='block';
+  document.getElementById('constMethod').textContent=cb.method||'';
+  const rows=cb.constituencies.map(c=>{
+    const chips=Object.entries(c.alloc).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+      `<span class="cchip" style="background:${P[k]?P[k].color:'#888'}">${P[k]?P[k].short:k} ${v}</span>`).join('');
+    return `<tr data-n="${c.name.toLowerCase()}"><td class="cn">${c.name}</td><td style="color:var(--muted);white-space:nowrap">${c.seats} έδρ.</td><td>${chips}</td></tr>`;
+  }).join('');
+  document.getElementById('constTable').innerHTML=rows;
+  const st=Object.entries(cb.state_seats||{}).map(([k,v])=>`${P[k]?P[k].short:k} ${v}`).join(' · ');
+  const stT=Object.values(cb.state_seats||{}).reduce((a,b)=>a+b,0);
+  document.getElementById('constState').textContent=st?`+ ${stT} έδρες Επικρατείας (εθνική κατανομή): ${st}`:'';
+  document.getElementById('constFilter').oninput=e=>{
+    const q=e.target.value.toLowerCase();
+    document.querySelectorAll('#constTable tr').forEach(tr=>tr.style.display=tr.dataset.n.includes(q)?'':'none');
+  };
 }
 
 function renderQuality(q){
