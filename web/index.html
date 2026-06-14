@@ -214,6 +214,11 @@
   .ctable td{padding:7px 8px;border-bottom:1px solid var(--line-soft);vertical-align:top}
   .ctable .cn{font-weight:600;white-space:nowrap}
   .cchip{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:1px 7px;margin:1px 3px 1px 0}
+  #mapPop{position:fixed;z-index:9999;display:none;background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 12px;box-shadow:0 8px 28px rgba(0,0,0,.16);font-size:12.5px;max-width:210px;pointer-events:none}
+  .cmap-path{cursor:pointer;transition:opacity .12s}
+  .cmap-path:hover{opacity:.82}
+  #mapGrid{display:grid;grid-template-columns:1fr 230px;gap:18px;align-items:start}
+  @media(max-width:760px){#mapGrid{grid-template-columns:1fr}}
   #constFilter{width:100%;padding:8px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;margin-bottom:10px;background:var(--paper-2)}
 </style>
 </head>
@@ -360,6 +365,18 @@
 
 
       <div id="qualityPanel" style="display:none">
+        <div id="mapPanel" style="display:none">
+        <h2 class="sectitle">Χάρτης Επικράτησης ανά Περιφέρεια</h2>
+        <p class="secsub">Κάθε περιφέρεια χρωματίζεται με το κόμμα που λαμβάνει τις περισσότερες έδρες. Αθήνα, Πειραιάς και Θεσσαλονίκη αναλύονται στα ένθετα δεξιά (γεωγραφικά είναι ενιαία). Πέρασε τον δείκτη ή άγγιξε μια περιφέρεια για ανάλυση.</p>
+        <div class="panel"><div class="pb">
+          <div id="mapLegend" style="margin-bottom:12px"></div>
+          <div id="mapGrid">
+            <div id="mapSvgWrap"></div>
+            <div id="mapInsets"></div>
+          </div>
+        </div></div>
+        </div>
+
         <div id="constPanel" style="display:none">
         <h2 class="sectitle">Κατανομή ανά Εκλογική Περιφέρεια</h2>
         <p class="secsub" id="constMethod"></p>
@@ -1048,7 +1065,7 @@ async function loadLive(){
     applyPolls();
     if(j.sentiment){ PKEYS.forEach((k,i)=>{ if(k in j.sentiment) state[i].d30=+j.sentiment[k]; }); buildSliders(); renderFundamentals(); }
     if(j.quality){ renderQuality(j.quality); }
-    if(j.constituencies){ renderConstituencies(j.constituencies); }
+    if(j.constituencies){ renderConstituencies(j.constituencies); renderMap(j.constituencies); }
     if(j.report_el){
       document.getElementById('reportPanel').style.display='block';
       document.getElementById('reportText').textContent=j.report_el;
@@ -1155,6 +1172,122 @@ buildSliders();
 runNow();
 samUpdateCliff();
 loadLive();
+
+
+// ===== Χάρτης Ελλάδας ανά εκλογική περιφέρεια (Διαδρομή Α: γεωγραφικά όρια νομών) =====
+const MAP_META = {"map": {"Achaea": "Achaia", "Aetolia-Acarnania": "Aitoloakarnania", "Arcadia": "Arkadia", "Argolis": "Argolida", "Arta": "Arta", "Boeotia": "Viotia", "Chalkidiki": "Chalkidiki", "Chania": "Chania", "Chios": "Chios", "Corinthia": "Korinthos", "Cyclades": "Kyklades", "Dodecanese": "Dodekanisa", "Drama": "Drama", "Euboea": "Evia", "Evros": "Evros", "Evrytania": "Euritania", "Florina": "Florina", "Phocis": "Fokida", "Phthiotis": "Fthiotida", "Grevena": "Grevena", "Heraklion": "Heraklio", "Elis": "Ilia", "Imathia": "Imathia", "Ioannina": "Ioannina", "Karditsa": "Karditsa", "Kastoria": "Kastoria", "Kavala": "Kavala", "Cephalonia": "Kefallonia", "Corfu": "Kerkyra", "Kilkis": "Kilkis", "Kozani": "Kozani", "Laconia": "Lakonia", "Larissa": "Larisa", "Lasithi": "Lasithio", "Lefkada": "Lefkada", "Lesbos": "Lesvos", "Magnesia": "Magnisia", "Messenia": "Mesinia", "Pella": "Pella", "Pieria": "Pieria", "Preveza": "Preveza", "Rethymno": "Rethymno", "Rhodope": "Rodopi", "Samos": "Samos", "Serres": "Serres", "Thesprotia": "Thesprotia", "Trikala": "Trikala", "Xanthi": "Xanthi", "Zakynthos": "Zakynthos", "Athens A": ["Athens"], "Athens B1": ["Athens"], "Athens B2": ["Athens"], "Athens B3": ["Athens"], "Piraeus A": ["Peiraias and islands"], "Piraeus B": ["Peiraias and islands"], "East Attica": ["East Attica"], "West Attica": ["West Attica"], "Thessaloniki A": ["Thessaloniki"], "Thessaloniki B": ["Thessaloniki"]}, "composite": {"Athens": ["Athens A", "Athens B1", "Athens B2", "Athens B3"], "Peiraias and islands": ["Piraeus A", "Piraeus B"], "Thessaloniki": ["Thessaloniki A", "Thessaloniki B"]}, "el": {"Achaea": "Αχαΐα", "Aetolia-Acarnania": "Αιτωλοακαρνανία", "Arcadia": "Αρκαδία", "Argolis": "Αργολίδα", "Arta": "Άρτα", "Boeotia": "Βοιωτία", "Chalkidiki": "Χαλκιδική", "Chania": "Χανιά", "Chios": "Χίος", "Corinthia": "Κορινθία", "Cyclades": "Κυκλάδες", "Dodecanese": "Δωδεκάνησα", "Drama": "Δράμα", "Euboea": "Εύβοια", "Evros": "Έβρος", "Evrytania": "Ευρυτανία", "Florina": "Φλώρινα", "Phocis": "Φωκίδα", "Phthiotis": "Φθιώτιδα", "Grevena": "Γρεβενά", "Heraklion": "Ηράκλειο", "Elis": "Ηλεία", "Imathia": "Ημαθία", "Ioannina": "Ιωάννινα", "Karditsa": "Καρδίτσα", "Kastoria": "Καστοριά", "Kavala": "Καβάλα", "Cephalonia": "Κεφαλονιά", "Corfu": "Κέρκυρα", "Kilkis": "Κιλκίς", "Kozani": "Κοζάνη", "Laconia": "Λακωνία", "Larissa": "Λάρισα", "Lasithi": "Λασίθι", "Lefkada": "Λευκάδα", "Lesbos": "Λέσβος", "Magnesia": "Μαγνησία", "Messenia": "Μεσσηνία", "Pella": "Πέλλα", "Pieria": "Πιερία", "Preveza": "Πρέβεζα", "Rethymno": "Ρέθυμνο", "Rhodope": "Ροδόπη", "Samos": "Σάμος", "Serres": "Σέρρες", "Thesprotia": "Θεσπρωτία", "Trikala": "Τρίκαλα", "Xanthi": "Ξάνθη", "Zakynthos": "Ζάκυνθος", "Athens A": "Α΄ Αθηνών", "Athens B1": "Β1΄ Βόρειου Τομέα", "Athens B2": "Β2΄ Δυτικού Τομέα", "Athens B3": "Β3΄ Νότιου Τομέα", "Piraeus A": "Α΄ Πειραιά", "Piraeus B": "Β΄ Πειραιά", "East Attica": "Ανατ. Αττικής", "West Attica": "Δυτ. Αττικής", "Thessaloniki A": "Α΄ Θεσσαλονίκης", "Thessaloniki B": "Β΄ Θεσσαλονίκης"}};
+let GEO_CACHE = null;
+
+async function renderMap(cb){
+  const panel=document.getElementById('mapPanel');
+  if(!cb||!cb.constituencies){ if(panel) panel.style.display='none'; return; }
+  panel.style.display='block';
+  const P={}; state.forEach(p=>P[p.key]=p);
+  // έδρες ανά περιφέρεια (όνομα μοντέλου -> {κόμμα:έδρες})
+  const byCon={}; cb.constituencies.forEach(c=>byCon[c.name]=c.alloc||{});
+  // πρώτο κόμμα ανά σχήμα GeoJSON (σύνθετα = άθροισμα υπο-περιφερειών)
+  const shapeWinner={}, shapeBreak={};
+  for(const [con,shape] of Object.entries(MAP_META.map)){
+    const shapes = Array.isArray(shape)?shape:[shape];
+    shapes.forEach(s=>{
+      shapeBreak[s]=shapeBreak[s]||{};
+      const al=byCon[con]||{};
+      for(const[k,v]of Object.entries(al)) shapeBreak[s][k]=(shapeBreak[s][k]||0)+v;
+    });
+  }
+  for(const[s,al]of Object.entries(shapeBreak)){
+    let best=null,bv=-1; for(const[k,v]of Object.entries(al)) if(v>bv){bv=v;best=k;}
+    shapeWinner[s]=best;
+  }
+  if(!GEO_CACHE){
+    try{ GEO_CACHE=await fetch('api/greece.geojson').then(r=>r.json()); }
+    catch(e){ document.getElementById('mapSvgWrap').innerHTML='<p style="color:var(--muted)">Ο χάρτης δεν φόρτωσε.</p>'; return; }
+  }
+  drawSvg(GEO_CACHE, shapeWinner, shapeBreak, P, byCon);
+  drawInsets(shapeBreak, byCon, P);
+  drawLegend(P, byCon);
+}
+
+function projPath(geom, bb, W, H, pad){
+  const [minX,minY,maxX,maxY]=bb;
+  const sx=(W-2*pad)/(maxX-minX), sy=(H-2*pad)/(maxY-minY), s=Math.min(sx,sy);
+  const ox=pad+((W-2*pad)-s*(maxX-minX))/2, oy=pad+((H-2*pad)-s*(maxY-minY))/2;
+  const X=x=>ox+s*(x-minX), Y=y=>oy+(H-2*pad)-s*(y-minY)+0; // flip Y
+  const ring=r=>'M'+r.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join('L')+'Z';
+  const polys=geom.type==='Polygon'?[geom.coordinates]:geom.coordinates;
+  return polys.map(poly=>poly.map(ring).join('')).join('');
+}
+function bbox(features){
+  let a=[180,90,-180,-90];
+  const walk=c=>{ if(typeof c[0]==='number'){a[0]=Math.min(a[0],c[0]);a[1]=Math.min(a[1],c[1]);a[2]=Math.max(a[2],c[0]);a[3]=Math.max(a[3],c[1]);} else c.forEach(walk);};
+  features.forEach(f=>walk(f.geometry.coordinates)); return a;
+}
+
+function drawSvg(geo, winner, brk, P, byCon){
+  const W=680,H=720,pad=12, bb=bbox(geo.features);
+  const elName={}; for(const[con,sh]of Object.entries(MAP_META.map)){const a=Array.isArray(sh)?sh:[sh];a.forEach(s=>{(elName[s]=elName[s]||[]).push(MAP_META.el[con]||con);});}
+  let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">`;
+  geo.features.forEach(f=>{
+    const nm=f.properties.name, win=winner[nm], col=win&&P[win]?P[win].color:'#d9d4c8';
+    const d=projPath(f.geometry,bb,W,H,pad);
+    const tip=(elName[nm]||[nm]).join(' / ');
+    svg+=`<path d="${d}" fill="${col}" stroke="#fff" stroke-width="0.6" data-shape="${nm}" data-tip="${tip}" class="cmap-path"><title>${tip}</title></path>`;
+  });
+  svg+='</svg>';
+  document.getElementById('mapSvgWrap').innerHTML=svg;
+  // hover popup
+  const wrap=document.getElementById('mapSvgWrap');
+  wrap.querySelectorAll('.cmap-path').forEach(p=>{
+    p.onmouseenter=p.onclick=e=>{
+      const sh=p.dataset.shape; showMapPop(sh, brk[sh]||{}, P, e);
+    };
+    p.onmouseleave=()=>{const pop=document.getElementById('mapPop'); if(pop)pop.style.display='none';};
+  });
+}
+
+function showMapPop(shape, al, P, e){
+  let pop=document.getElementById('mapPop');
+  if(!pop){pop=document.createElement('div');pop.id='mapPop';document.body.appendChild(pop);}
+  const elName={}; for(const[con,sh]of Object.entries(MAP_META.map)){const a=Array.isArray(sh)?sh:[sh];a.forEach(s=>{(elName[s]=elName[s]||[]).push(MAP_META.el[con]||con);});}
+  const title=(elName[shape]||[shape]).join(' / ');
+  const rows=Object.entries(al).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+    `<span style="display:inline-block;margin:2px 5px 2px 0"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${P[k]?P[k].color:'#888'};margin-right:4px"></span>${P[k]?P[k].short:k} <b>${v}</b></span>`).join('');
+  pop.innerHTML=`<div style="font-weight:700;margin-bottom:4px">${title}</div>${rows||'<span style="color:#999">—</span>'}`;
+  pop.style.display='block';
+  const x=(e.clientX||0)+14, y=(e.clientY||0)+14;
+  pop.style.left=Math.min(x,window.innerWidth-220)+'px'; pop.style.top=y+'px';
+}
+
+function tile(con, al, P){
+  let best=null,bv=-1; for(const[k,v]of Object.entries(al)) if(v>bv){bv=v;best=k;}
+  const col=best&&P[best]?P[best].color:'#d9d4c8';
+  const tot=Object.values(al).reduce((a,b)=>a+b,0);
+  const chips=Object.entries(al).sort((a,b)=>b[1]-a[1]).map(([k,v])=>
+    `<span style="display:inline-block;font-size:10px;font-weight:700;color:#fff;background:${P[k]?P[k].color:'#888'};border-radius:3px;padding:0 4px;margin:1px 2px 1px 0">${P[k]?P[k].short:k} ${v}</span>`).join('');
+  return `<div style="border:1px solid var(--line-soft);border-left:5px solid ${col};border-radius:7px;padding:7px 9px;background:var(--paper-2)">
+    <div style="font-weight:700;font-size:12.5px">${MAP_META.el[con]||con} <span style="color:var(--muted);font-weight:400">· ${tot} έδρ.</span></div>
+    <div style="margin-top:3px">${chips}</div></div>`;
+}
+function drawInsets(brk, byCon, P){
+  const groups=[["Αθήνα",["Athens A","Athens B1","Athens B2","Athens B3"]],
+                ["Πειραιάς",["Piraeus A","Piraeus B"]],
+                ["Θεσσαλονίκη",["Thessaloniki A","Thessaloniki B"]],
+                ["Υπόλοιπη Αττική",["East Attica","West Attica"]]];
+  let html='';
+  groups.forEach(([t,cons])=>{
+    html+=`<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:5px">${t}</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:5px">${cons.map(c=>tile(c,byCon[c]||{},P)).join('')}</div></div>`;
+  });
+  document.getElementById('mapInsets').innerHTML=html;
+}
+
+function drawLegend(P, byCon){
+  const seats={}; Object.values(byCon).forEach(al=>{for(const[k,v]of Object.entries(al))seats[k]=(seats[k]||0)+v;});
+  const items=state.filter(p=>seats[p.key]>0).sort((a,b)=>seats[b.key]-seats[a.key]).map(p=>
+    `<span style="display:inline-flex;align-items:center;margin:3px 10px 3px 0;font-size:12px"><span style="width:11px;height:11px;border-radius:2px;background:${p.color};margin-right:5px"></span>${p.short}</span>`).join('');
+  document.getElementById('mapLegend').innerHTML=items;
+}
+
 </script>
 </body>
 </html>
