@@ -4,7 +4,7 @@ name: rebuild-150plus1
 # (GitHub cron is UTC; "0 */6 * * *" = every 6 hours.)
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 */3 * * *"
   workflow_dispatch: {}
 
 permissions:
