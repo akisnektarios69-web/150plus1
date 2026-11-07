@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-11-07T09:41:54.268225+00:00",
-  "report_el": "Η εικόνα σήμερα: πρώτο κόμμα η ΝΔ με εκτίμηση 28.6% και 118 έδρες (εύρος 90%: 86–141), δεύτερο η ΕΛ.Α.Σ. με 16.0%. Η πιθανότητα αυτοδυναμίας διαμορφώνεται στο 1%. Καμία μονοκομματική πλειοψηφία δεν προκύπτει στα τρέχοντα δεδομένα. Ισχυρότερος πολιτικά εφικτός σχηματισμός: ΝΔ+ΠΑΣΟΚ με 162 έδρες και πιθανότητα πλειοψηφίας 82%. Με «χαμένη ψήφο» 14.4%, το κατώφλι αυτοδυναμίας διαμορφώνεται στο 36.2% — το πρώτο κόμμα απέχει 7.6 μονάδες. Δυναμική 30 ημερών: ΕΛΠΙΔΑ -0.8, ΠΑΣΟΚ +0.6 μονάδες. Ποιότητα τεκμηρίωσης: υψηλή (συμφωνία εταιρειών 82%, 9 μετρήσεις στο 30ήμερο). Το οικονομικό κλίμα παραμένει επιβαρυντικό για το κυβερνών κόμμα.",
+  "generated_at": "2026-11-07T17:33:01.236288+00:00",
+  "report_el": "Η εικόνα σήμερα: πρώτο κόμμα η ΝΔ με εκτίμηση 29.1% και 122 έδρες (εύρος 90%: 88–144), δεύτερο η ΕΛ.Α.Σ. με 15.9%. Η πιθανότητα αυτοδυναμίας διαμορφώνεται στο 2%. Καμία μονοκομματική πλειοψηφία δεν προκύπτει στα τρέχοντα δεδομένα. Ισχυρότερος πολιτικά εφικτός σχηματισμός: ΝΔ+ΠΑΣΟΚ με 165 έδρες και πιθανότητα πλειοψηφίας 87%. Με «χαμένη ψήφο» 14.9%, το κατώφλι αυτοδυναμίας διαμορφώνεται στο 36.0% — το πρώτο κόμμα απέχει 6.9 μονάδες. Δυναμική 30 ημερών: ΕΛΠΙΔΑ -0.8, ΠΑΣΟΚ +0.6 μονάδες. Ποιότητα τεκμηρίωσης: υψηλή (συμφωνία εταιρειών 82%, 9 μετρήσεις στο 30ήμερο).",
   "reference_date": "2026-10-30",
   "half_life_days": 21,
   "polls": [
@@ -5686,16 +5686,16 @@
   },
   "econ": {
     "growth": 2.1,
-    "inflation": 5.0,
-    "unemp": 9.5,
-    "conf": -52.2
+    "inflation": 2.9,
+    "unemp": 7.6,
+    "conf": -48.9
   },
-  "health_index": -0.275,
+  "health_index": -0.138,
   "sentiment": {
-    "ND": -0.206,
+    "ND": -0.118,
     "ELAS": 0.0,
     "PASOK": 0.0,
-    "ELPIDA": 1.0,
+    "ELPIDA": 0.0,
     "EL": 0.0,
     "KKE": 0.0,
     "PE": 0.0,
@@ -12724,8 +12724,8 @@
         "seats": 3,
         "alloc": {
           "ND": 1,
-          "PASOK": 1,
-          "PE": 1
+          "KKE": 1,
+          "FL": 1
         }
       },
       {
@@ -12741,8 +12741,8 @@
         "name": "Arta",
         "seats": 2,
         "alloc": {
-          "ELAS": 1,
-          "KKE": 1
+          "ND": 1,
+          "ELAS": 1
         }
       },
       {
@@ -12750,9 +12750,8 @@
         "seats": 13,
         "alloc": {
           "ND": 6,
-          "ELAS": 2,
+          "ELAS": 3,
           "PASOK": 1,
-          "ELPIDA": 1,
           "EL": 1,
           "KKE": 1,
           "PE": 1
@@ -12762,14 +12761,13 @@
         "name": "Athens B1 – North Athens",
         "seats": 16,
         "alloc": {
-          "ND": 7,
+          "ND": 8,
           "ELAS": 3,
           "PASOK": 1,
           "ELPIDA": 1,
           "EL": 1,
           "KKE": 1,
-          "PE": 1,
-          "FL": 1
+          "PE": 1
         }
       },
       {
@@ -12777,9 +12775,8 @@
         "seats": 12,
         "alloc": {
           "ND": 4,
-          "ELAS": 2,
+          "ELAS": 3,
           "PASOK": 1,
-          "ELPIDA": 1,
           "EL": 1,
           "KKE": 2,
           "PE": 1
@@ -12803,10 +12800,9 @@
         "name": "East Attica",
         "seats": 12,
         "alloc": {
-          "ND": 5,
+          "ND": 6,
           "ELAS": 2,
           "PASOK": 1,
-          "ELPIDA": 1,
           "EL": 1,
           "KKE": 1,
           "PE": 1
@@ -12825,7 +12821,7 @@
         "seats": 3,
         "alloc": {
           "ND": 1,
-          "ELAS": 1,
+          "KKE": 1,
           "FL": 1
         }
       },
@@ -12842,7 +12838,7 @@
         "alloc": {
           "ND": 1,
           "PASOK": 1,
-          "PE": 1
+          "KKE": 1
         }
       },
       {
@@ -12868,7 +12864,7 @@
         "alloc": {
           "ND": 1,
           "ELAS": 1,
-          "FL": 1
+          "PE": 1
         }
       },
       {
@@ -12885,8 +12881,8 @@
         "seats": 4,
         "alloc": {
           "ND": 2,
-          "ELAS": 1,
-          "PASOK": 1
+          "PASOK": 1,
+          "PE": 1
         }
       },
       {
@@ -12905,7 +12901,7 @@
         "alloc": {
           "ND": 1,
           "PASOK": 1,
-          "PE": 1
+          "KKE": 1
         }
       },
       {
@@ -12949,7 +12945,7 @@
         "name": "Florina",
         "seats": 2,
         "alloc": {
-          "KKE": 1,
+          "EL": 1,
           "PE": 1
         }
       },
@@ -13020,7 +13016,7 @@
         "alloc": {
           "ND": 1,
           "PASOK": 1,
-          "KKE": 1
+          "EL": 1
         }
       },
       {
@@ -13045,9 +13041,8 @@
         "seats": 8,
         "alloc": {
           "ND": 3,
-          "ELAS": 1,
+          "ELAS": 2,
           "PASOK": 1,
-          "ELPIDA": 1,
           "EL": 1,
           "KKE": 1
         }
@@ -13109,7 +13104,7 @@
         "name": "Phocis",
         "seats": 1,
         "alloc": {
-          "EL": 1
+          "ELPIDA": 1
         }
       },
       {
@@ -13134,9 +13129,8 @@
         "name": "Piraeus A",
         "seats": 5,
         "alloc": {
-          "ND": 2,
+          "ND": 3,
           "ELAS": 1,
-          "EL": 1,
           "PE": 1
         }
       },
@@ -13163,8 +13157,8 @@
         "name": "Rethymno",
         "seats": 2,
         "alloc": {
-          "ND": 1,
-          "PASOK": 1
+          "PASOK": 1,
+          "EL": 1
         }
       },
       {
@@ -13197,19 +13191,19 @@
         "name": "Thesprotia",
         "seats": 1,
         "alloc": {
-          "EL": 1
+          "ELPIDA": 1
         }
       },
       {
         "name": "Thessaloniki A",
         "seats": 17,
         "alloc": {
-          "ND": 6,
+          "ND": 7,
           "ELAS": 3,
           "PASOK": 2,
           "ELPIDA": 1,
           "EL": 1,
-          "KKE": 2,
+          "KKE": 1,
           "PE": 1,
           "FL": 1
         }
@@ -13221,9 +13215,9 @@
           "ND": 4,
           "ELAS": 1,
           "PASOK": 1,
-          "ELPIDA": 1,
           "EL": 1,
-          "KKE": 1
+          "KKE": 1,
+          "PE": 1
         }
       },
       {
@@ -13275,15 +13269,15 @@
     "SAM": 0.0
   },
   "effective_pct": {
-    "ND": 28.6,
-    "ELAS": 16.0,
-    "PASOK": 13.35,
-    "ELPIDA": 4.9,
-    "EL": 7.45,
-    "KKE": 7.13,
-    "PE": 4.5,
-    "FL": 3.65,
-    "SAM": 0.1
+    "ND": 29.07,
+    "ELAS": 15.95,
+    "PASOK": 13.3,
+    "ELPIDA": 4.25,
+    "EL": 7.4,
+    "KKE": 7.08,
+    "PE": 4.45,
+    "FL": 3.6,
+    "SAM": 0.05
   },
   "results": {
     "parties": [
@@ -13292,22 +13286,22 @@
         "short": "ΝΔ",
         "name": "Νέα Δημοκρατία",
         "color": "#1f4f9c",
-        "pct": 28.6,
-        "mean_seats": 118.3,
-        "rep_seats": 119,
-        "low90": 86,
-        "high90": 141
+        "pct": 29.1,
+        "mean_seats": 121.7,
+        "rep_seats": 122,
+        "low90": 88,
+        "high90": 144
       },
       {
         "key": "ELAS",
         "short": "ΕΛ.Α.Σ.",
         "name": "ΕΛ.Α.Σ.",
         "color": "#e6a532",
-        "pct": 16.0,
-        "mean_seats": 52.3,
-        "rep_seats": 52,
+        "pct": 15.9,
+        "mean_seats": 52.6,
+        "rep_seats": 53,
         "low90": 40,
-        "high90": 65
+        "high90": 66
       },
       {
         "key": "PASOK",
@@ -13315,9 +13309,9 @@
         "name": "ΠΑΣΟΚ – ΚΙΝΑΛ",
         "color": "#179b54",
         "pct": 13.3,
-        "mean_seats": 44.1,
+        "mean_seats": 43.4,
         "rep_seats": 44,
-        "low90": 32,
+        "low90": 31,
         "high90": 57
       },
       {
@@ -13325,22 +13319,22 @@
         "short": "ΕΛΠΙΔΑ",
         "name": "Ελπίδα",
         "color": "#c8a96b",
-        "pct": 4.9,
-        "mean_seats": 15.1,
-        "rep_seats": 15,
+        "pct": 4.2,
+        "mean_seats": 12.2,
+        "rep_seats": 12,
         "low90": 0,
-        "high90": 25
+        "high90": 22
       },
       {
         "key": "EL",
         "short": "ΕΛ",
         "name": "Ελληνική Λύση",
         "color": "#7aa6d6",
-        "pct": 7.5,
-        "mean_seats": 24.1,
+        "pct": 7.4,
+        "mean_seats": 24.3,
         "rep_seats": 24,
         "low90": 14,
-        "high90": 35
+        "high90": 34
       },
       {
         "key": "KKE",
@@ -13359,7 +13353,7 @@
         "name": "Πλεύση Ελευθερίας",
         "color": "#7d4a98",
         "pct": 4.5,
-        "mean_seats": 13.3,
+        "mean_seats": 13.4,
         "rep_seats": 13,
         "low90": 0,
         "high90": 23
@@ -13370,10 +13364,10 @@
         "name": "Φωνή Λογικής",
         "color": "#2b333f",
         "pct": 3.6,
-        "mean_seats": 9.6,
-        "rep_seats": 10,
+        "mean_seats": 9.2,
+        "rep_seats": 9,
         "low90": 0,
-        "high90": 19
+        "high90": 18
       },
       {
         "key": "SAM",
@@ -13387,9 +13381,9 @@
         "high90": 0
       }
     ],
-    "self_sufficiency": 0.011,
-    "first_seats_low90": 86,
-    "first_seats_high90": 141,
+    "self_sufficiency": 0.0165,
+    "first_seats_low90": 88,
+    "first_seats_high90": 144,
     "parties_in_parliament": 8,
     "coalitions": [
       {
@@ -13401,8 +13395,8 @@
           "ΝΔ",
           "ΠΑΣΟΚ"
         ],
-        "mean_seats": 162.5,
-        "p_majority": 0.8215,
+        "mean_seats": 165.2,
+        "p_majority": 0.8665,
         "feasible": true
       },
       {
@@ -13416,8 +13410,8 @@
           "ΕΛ",
           "ΦΛ"
         ],
-        "mean_seats": 152.1,
-        "p_majority": 0.5775,
+        "mean_seats": 155.2,
+        "p_majority": 0.6705,
         "feasible": true
       },
       {
@@ -13429,8 +13423,8 @@
           "ΝΔ",
           "ΕΛ"
         ],
-        "mean_seats": 142.5,
-        "p_majority": 0.2875,
+        "mean_seats": 146.0,
+        "p_majority": 0.383,
         "feasible": true
       },
       {
@@ -13442,8 +13436,8 @@
           "ΝΔ",
           "ΦΛ"
         ],
-        "mean_seats": 128.0,
-        "p_majority": 0.0435,
+        "mean_seats": 131.0,
+        "p_majority": 0.0735,
         "feasible": true
       },
       {
@@ -13457,7 +13451,22 @@
           "ΕΛ.Α.Σ.",
           "ΠΑΣΟΚ"
         ],
-        "mean_seats": 214.7,
+        "mean_seats": 217.8,
+        "p_majority": 1.0,
+        "feasible": false
+      },
+      {
+        "members": [
+          "ND",
+          "ELAS",
+          "KKE"
+        ],
+        "labels": [
+          "ΝΔ",
+          "ΕΛ.Α.Σ.",
+          "ΚΚΕ"
+        ],
+        "mean_seats": 197.5,
         "p_majority": 1.0,
         "feasible": false
       },
@@ -13472,41 +13481,26 @@
           "ΕΛ.Α.Σ.",
           "ΕΛ"
         ],
-        "mean_seats": 194.7,
-        "p_majority": 0.9995,
-        "feasible": false
-      },
-      {
-        "members": [
-          "ND",
-          "ELAS",
-          "KKE"
-        ],
-        "labels": [
-          "ΝΔ",
-          "ΕΛ.Α.Σ.",
-          "ΚΚΕ"
-        ],
-        "mean_seats": 193.7,
+        "mean_seats": 198.6,
         "p_majority": 0.9995,
         "feasible": false
       }
     ],
     "banzhaf": {
-      "ND": 0.4633,
-      "ELAS": 0.0052,
-      "PASOK": 0.2206,
-      "ELPIDA": 0.0045,
-      "EL": 0.2155,
+      "ND": 0.4746,
+      "ELAS": 0.0041,
+      "PASOK": 0.2048,
+      "ELPIDA": 0.0038,
+      "EL": 0.2275,
       "KKE": 0.0,
-      "PE": 0.0048,
-      "FL": 0.0857,
-      "SAM": 0.0005
+      "PE": 0.0038,
+      "FL": 0.0813,
+      "SAM": 0.0001
     },
     "majority_math": {
-      "wasted_share": 14.4,
-      "majority_need_pct": 36.2,
-      "majority_gap": 7.6
+      "wasted_share": 14.9,
+      "majority_need_pct": 36.0,
+      "majority_gap": 6.9
     },
     "n_sims": 2000
   }
